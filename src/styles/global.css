@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* Font Face Declarations */
+/* Agdasima - Display/Heading Font */
+@font-face {
+  font-family: "Agdasima";
+  src: url("/fonts/agdasima/Agdasima-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Agdasima";
+  src: url("/fonts/agdasima/Agdasima-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Nata - Original Font */
+@font-face {
+  font-family: "Nata";
+  src: url("/fonts/nata/MysticalType-Nata-Heavy.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Nata Sans - Primary Font */
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nata Sans";
+  src: url("/fonts/nata/NataSans-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Be Vietnam Pro - Secondary Font */
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/fonts/vietnam/BeVietnamPro-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Primary text colors */
+  --color-light-gray: oklch(0.92 0.01 270);
+  --color-gray: oklch(0.68 0.01 270);
+  --color-dark-gray: oklch(0.55 0.01 270);
+  --color-charcoal: oklch(0.5243 0 0);
+  --color-near-black: oklch(0.13 0.02 270);
+
+  /* Pink/Brand colors */
+  --color-pink: oklch(0.72 0.25 345);
+  --color-intense-pink: oklch(0.6432 0.2593 1.25);
+  --color-soft-pink: oklch(0.7784 0.1539 349.2);
+  --color-light-pink: oklch(0.8448 0.1023 347.03);
+  --color-pale-pink: oklch(0.9488 0.032 344.96);
+
+  /* Background colors */
+  --color-black: oklch(0.1543 0 0);
+  --color-dark: oklch(0.2046 0 0);
+  --color-secondary: oklch(0.2435 0 0);
+  --color-elevated: oklch(0.21 0.02 270);
+  --color-surface: oklch(0.17 0.02 270);
+
+  /* Special effects */
+  --color-overlay: oklch(0.6432 0.2593 1.25 / 56.08%);
+
+  /* Font families */
+  --font-family-display: "Agdasima", ui-sans-serif, system-ui, sans-serif;
+  --font-family-primary: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-family-secondary: "Nata Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-family-nata: "Nata", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Apply default font */
+body {
+  font-family: var(--font-family-primary);
+}

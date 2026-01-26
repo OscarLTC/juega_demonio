@@ -1,0 +1,57 @@
+---
+import { cn } from "../../utils/cn";
+import { Image } from "astro:assets";
+import winner1 from "../../assets/img/winners/winner1.png";
+import winner2 from "../../assets/img/winners/winner2.jpg";
+import winner3 from "../../assets/img/winners/winner3.jpg";
+import winner4 from "../../assets/img/winners/winner4.jpg";
+
+const winners = [
+  { id: 1, image: winner1, alt: "Ganador feliz con copa" },
+  { id: 2, image: winner2, alt: "Ganador celebrando" },
+  { id: 3, image: winner3, alt: "Ganador con premios" },
+  { id: 4, image: winner4, alt: "Ganador emocionado" },
+];
+---
+
+<section
+  class="w-full bg-black py-12 sm:py-16 md:py-20 relative overflow-hidden"
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+    <div class="relative md:absolute z-10 md:top-2 mb-8 md:mb-0">
+      <h2
+        class="font-family-nata text-4xl sm:text-5xl md:text-7xl text-intense-pink uppercase transform -skew-x-6 text-center md:text-left"
+      >
+        <span class="text-xl sm:text-2xl md:text-3xl">¡Tu puedes ser el</span>
+        <br />
+        <span>próximo ganador!</span>
+      </h2>
+    </div>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 md:mt-10"
+    >
+      {
+        winners.map((winner, index) => (
+          <div
+            class={cn(
+              "relative group",
+              index % 2 === 0 ? "lg:mt-16" : "lg:mt-0",
+            )}
+          >
+            <div class="bg-white rounded-xl border-2 border-intense-pink h-[300px] w-full overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-[1.02] hover:shadow-intense-pink/40">
+              <Image
+                src={winner.image}
+                alt={winner.alt}
+                class="w-full h-full object-cover object-top rounded-xl transition-all duration-500"
+                width={300}
+                height={300}
+                loading="lazy"
+              />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

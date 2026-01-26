@@ -1,0 +1,169 @@
+---
+import { cn } from "../utils/cn";
+import Button from "./ui/Button.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+
+const currentPath = Astro.url.pathname;
+const getLinkClass = (path: string) => {
+  const baseClasses = "font-medium transition-colors";
+  const isActive =
+    path === "/" ? currentPath === "/" : currentPath.startsWith(path);
+
+  return cn(
+    baseClasses,
+    isActive ? "text-intense-pink" : "text-charcoal hover:text-intense-pink",
+  );
+};
+---
+
+<header
+  class="w-full bg-black px-2 sm:px-6 lg:px-20 py-2 sm:py-4 relative z-50"
+>
+  <div
+    class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-20 py-2 bg-dark rounded-xl relative"
+  >
+    <div class="flex items-center justify-between">
+      <a href="/" class="shrink-0 z-50 transition-opacity hover:opacity-80">
+        <Image
+          src="/logo.png"
+          alt="Juega Demonio"
+          class="h-8 sm:h-10 lg:h-12 w-auto"
+          width={100}
+          height={100}
+          loading="eager"
+        />
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-6 xl:gap-8">
+        <a href="/" class={getLinkClass("/")}>Inicio</a>
+        <a href="/premios" class={getLinkClass("/premios")}>Premios</a>
+        <a href="/ganadores" class={getLinkClass("/ganadores")}>Ganadores</a>
+        <a
+          href="/preguntas-frecuentes"
+          class={getLinkClass("/preguntas-frecuentes")}>Preguntas Frecuentes</a
+        >
+      </nav>
+
+      <div class="hidden md:flex items-center gap-2 lg:gap-4">
+        <Button label="Suscríbete" class="text-sm lg:text-base px-3 lg:px-4" />
+        <Button
+          variant="ghost"
+          label="Iniciar Sesión"
+          class="text-sm lg:text-base px-3 lg:px-4"
+          onclick="window.location.href='/login'"
+        />
+      </div>
+
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden z-50 p-2 text-charcoal hover:text-intense-pink transition-colors"
+        aria-label="Abrir menú"
+      >
+        <Icon id="icon-menu" name="ion:menu" class="w-6 h-6" />
+        <Icon
+          id="icon-close"
+          name="ion:close"
+          class="hidden w-6 h-6 transition-transform duration-300"
+        />
+      </button>
+    </div>
+
+    <div
+      id="mobile-menu"
+      class="md:hidden absolute left-0 right-0 top-full mt-2 mx-2 bg-dark rounded-xl border border-charcoal/20 shadow-xl overflow-hidden transition-all duration-300 ease-out opacity-0 max-h-0 pointer-events-none"
+    >
+      <nav class="flex flex-col gap-2 p-4">
+        <a
+          href="/"
+          class={cn(
+            getLinkClass("/"),
+            "py-3 px-4 rounded-lg hover:bg-white/5 transition-colors",
+          )}>Inicio</a
+        >
+        <a
+          href="/premios"
+          class={cn(
+            getLinkClass("/premios"),
+            "py-3 px-4 rounded-lg hover:bg-white/5 transition-colors",
+          )}>Premios</a
+        >
+        <a
+          href="/ganadores"
+          class={cn(
+            getLinkClass("/ganadores"),
+            "py-3 px-4 rounded-lg hover:bg-white/5 transition-colors",
+          )}>Ganadores</a
+        >
+        <a
+          href="/preguntas-frecuentes"
+          class={cn(
+            getLinkClass("/preguntas-frecuentes"),
+            "py-3 px-4 rounded-lg hover:bg-white/5 transition-colors",
+          )}>Preguntas Frecuentes</a
+        >
+
+        <div class="flex flex-col gap-3 pt-4 mt-2 border-t border-charcoal/20">
+          <Button label="Suscríbete" class="w-full" />
+          <Button
+            variant="ghost"
+            label="Iniciar Sesión"
+            class="w-full"
+            onclick="window.location.href='/login'"
+          />
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const iconMenu = document.getElementById("icon-menu");
+  const iconClose = document.getElementById("icon-close");
+
+  let isOpen = false;
+
+  btn?.addEventListener("click", () => {
+    isOpen = !isOpen;
+
+    if (isOpen) {
+      menu?.classList.remove("opacity-0", "max-h-0", "pointer-events-none");
+      menu?.classList.add(
+        "opacity-100",
+        "max-h-[500px]",
+        "pointer-events-auto",
+      );
+      iconMenu?.classList.add("hidden");
+      iconClose?.classList.remove("hidden");
+    } else {
+      menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
+      menu?.classList.remove(
+        "opacity-100",
+        "max-h-[500px]",
+        "pointer-events-auto",
+      );
+      iconMenu?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      isOpen &&
+      !btn?.contains(e.target as Node) &&
+      !menu?.contains(e.target as Node)
+    ) {
+      isOpen = false;
+      menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
+      menu?.classList.remove(
+        "opacity-100",
+        "max-h-[500px]",
+        "pointer-events-auto",
+      );
+      iconMenu?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+    }
+  });
+</script>

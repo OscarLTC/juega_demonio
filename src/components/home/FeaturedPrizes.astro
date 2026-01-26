@@ -1,0 +1,66 @@
+---
+import { PrizeCarousel } from "../react/PrizeCarousel";
+import Button from "../ui/Button.astro";
+
+import soundbarImg from "../../assets/img/prizes/soundbar.png";
+import keyboardImg from "../../assets/img/prizes/keyboard.png";
+import mouseImg from "../../assets/img/prizes/mouse.png";
+import controllerImg from "../../assets/img/prizes/controller.png";
+
+const prizes = [
+  {
+    id: "1",
+    name: "Darknets GS570",
+    image: soundbarImg.src,
+  },
+  {
+    id: "2",
+    name: "Wooting 60HE",
+    image: keyboardImg.src,
+  },
+  {
+    id: "3",
+    name: "WLMouse Beast X",
+    image: mouseImg.src,
+  },
+  {
+    id: "4",
+    name: "Rift C710",
+    image: controllerImg.src,
+  },
+  {
+    id: "5",
+    name: "Rift C710",
+    image: soundbarImg.src,
+  },
+  {
+    id: "6",
+    name: "Rift C710",
+    image: keyboardImg.src,
+  },
+  {
+    id: "7",
+    name: "Rift C710",
+    image: mouseImg.src,
+  },
+  {
+    id: "8",
+    name: "Rift C710",
+    image: controllerImg.src,
+  },
+];
+---
+
+<section class="py-20 bg-black overflow-hidden">
+  <div class="max-w-5xl mx-auto">
+    <PrizeCarousel client:visible prizes={prizes} />
+
+    <div class="flex justify-center mt-12">
+      <Button
+        label="Ver todos los premios"
+        onclick="window.location.href='/premios'"
+        class="px-8 py-3 text-xl"
+      />
+    </div>
+  </div>
+</section>

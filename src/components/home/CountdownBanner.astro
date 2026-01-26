@@ -1,0 +1,151 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import InfluencerImage from "../../assets/img/countdown.png";
+---
+
+<section
+  class="w-full bg-intense-pink py-4 relative overflow-hidden flex justify-center items-center my-10"
+  id="countdown-banner"
+>
+  <div
+    class="max-w-3xl w-full flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-16 py-4 md:py-2 relative z-10 gap-4 md:gap-6 border-pale-pink border-2 rounded-2xl mx-4 md:mx-0"
+  >
+    <div
+      class="text-pale-pink font-medium text-base md:text-base text-center md:text-left leading-tight"
+    >
+      La lista de <br class="hidden md:block" />
+      participantes <br class="hidden md:block" />
+      cierra en:
+    </div>
+
+    <div class="flex items-center gap-1">
+      <div class="flex flex-col items-center gap-1">
+        <span class="text-pale-pink text-xs font-semibold">Días</span>
+
+        <div
+          class="bg-pale-pink text-intense-pink size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md"
+        >
+          <span id="days">0</span>
+        </div>
+      </div>
+
+      <span
+        class="text-pale-pink text-4xl font-bold font-family-display h-11 flex items-end"
+        >:</span
+      >
+
+      <div class="flex flex-col items-center gap-1">
+        <span class="text-pale-pink text-xs font-semibold">Horas</span>
+
+        <div
+          class="bg-pale-pink text-intense-pink size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md"
+        >
+          <span id="hours">00</span>
+        </div>
+      </div>
+
+      <span
+        class="text-pale-pink text-4xl font-bold font-family-display h-11 flex items-end"
+        >:</span
+      >
+
+      <div class="flex flex-col items-center gap-1">
+        <span class="text-pale-pink text-xs font-semibold">Minutos</span>
+
+        <div
+          class="bg-pale-pink text-intense-pink size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md"
+        >
+          <span id="minutes">00</span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-pale-pink rounded-md px-2 py-1 flex items-center gap-1 border-2 border-[#FE8BC6]"
+    >
+      <div class="rounded-md text-intense-pink">
+        <Icon name="ri:kick-fill" class="size-8" />
+      </div>
+      <div class="flex flex-col text-center leading-5 font-semibold">
+        <span class="text-intense-pink text-xs">Resultado de los sorteos</span>
+        <span class="text-intense-pink text-xs font-bold">VIERNES 8:00 PM</span>
+      </div>
+    </div>
+
+    <div
+      class="hidden md:block absolute -top-8 -right-16 pointer-events-none translate-y-4"
+    >
+      <Image
+        src={InfluencerImage}
+        alt="Juega Demonio"
+        class="w-[100px] object-contain"
+      />
+    </div>
+  </div>
+</section>
+
+<script>
+  const getNextFridayPeru = () => {
+    const now = new Date();
+
+    const peruTimeStr = now.toLocaleString("en-US", {
+      timeZone: "America/Lima",
+    });
+    const nowInPeru = new Date(peruTimeStr);
+    const targetDay = 5;
+    const targetHour = 20;
+
+    const resultDate = new Date(nowInPeru);
+    const currentDay = resultDate.getDay();
+
+    let daysUntil = (targetDay + 7 - currentDay) % 7;
+
+    resultDate.setHours(targetHour, 0, 0, 0);
+
+    if (daysUntil === 0 && nowInPeru.getHours() >= targetHour) {
+      daysUntil = 7;
+    }
+
+    resultDate.setDate(resultDate.getDate() + daysUntil);
+
+    const year = resultDate.getFullYear();
+    const month = String(resultDate.getMonth() + 1).padStart(2, "0");
+    const day = String(resultDate.getDate()).padStart(2, "0");
+
+    const isoTarget = `${year}-${month}-${day}T20:00:00-05:00`;
+
+    return new Date(isoTarget).getTime();
+  };
+
+  const targetTime = getNextFridayPeru();
+
+  const updateCountdown = () => {
+    const now = new Date().getTime();
+    const diff = targetTime - now;
+
+    const elDays = document.getElementById("days");
+    const elHours = document.getElementById("hours");
+    const elMinutes = document.getElementById("minutes");
+
+    if (!elDays || !elHours || !elMinutes) return;
+
+    if (diff < 0) {
+      elDays.innerText = "0";
+      elHours.innerText = "00";
+      elMinutes.innerText = "00";
+      return;
+    }
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    elDays.innerText = d.toString();
+    elHours.innerText = h.toString().padStart(2, "0");
+    elMinutes.innerText = m.toString().padStart(2, "0");
+  };
+
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+</script>

@@ -1,0 +1,165 @@
+---
+import { Image } from "astro:assets";
+import Button from "../ui/Button.astro";
+
+import devilIcon from "../../assets/img/icons/devil-3d.png";
+import { Icon } from "astro-icon/components";
+---
+
+<section class="w-full bg-black relative overflow-hidden py-10">
+  <div
+    class="max-w-6xl mx-auto px-4 relative z-10 flex flex-col items-center h-full"
+  >
+    <div class="text-center mb-16 space-y-4">
+      <h2
+        class="font-family-nata text-5xl md:text-7xl text-intense-pink uppercase leading-[0.9] text-center -skew-x-6"
+      >
+        Suscríbete a un plan mensual
+      </h2>
+      <p class="text-gray-300 font-family-secondary text-sm">
+        y participa por <span class="text-soft-pink font-bold">TODOS</span> nuestros
+        premios mensuales
+      </p>
+    </div>
+
+    <div
+      class="flex flex-col md:flex-row justify-center gap-8 w-full max-w-xl items-stretch relative min-h-[400px]"
+    >
+      <div
+        class="absolute -top-8 -left-4 md:-left-17 z-0 w-20 md:w-24 hidden sm:block"
+      >
+        <Image
+          src={devilIcon}
+          alt="Devil"
+          class="w-full transform -rotate-13"
+          width={100}
+          height={100}
+          loading="lazy"
+        />
+      </div>
+
+      <div
+        id="plan-mensual"
+        data-plan="mensual"
+        class="plan-card flex-1 bg-black/5 border border-white/10 rounded-xl py-3 px-4 flex flex-col relative backdrop-blur-md overflow-hidden cursor-pointer"
+      >
+        <h3 class="text-white font-family-secondary font-bold mb-2">Mensual</h3>
+
+        <div class="flex items-start text-soft-pink">
+          <span class="text-sm self-end mb-2">s/.</span>
+          <span
+            class="text-2xl md:text-7xl transition-transform origin-left font-bold"
+            >6</span
+          >
+        </div>
+
+        <p class="text-pale-pink text-[10px] leading-relaxed">
+          Participas por más de 32 increíbles premios al mes, mientras tu
+          suscripción se encuentre activa.
+        </p>
+
+        <div
+          class="selection-indicator hidden items-center gap-2 text-xs text-pale-pink mt-auto mx-auto mb-4"
+        >
+          <span>Suscripción seleccionada</span>
+          <Icon name="ion:checkbox" />
+        </div>
+
+        <div
+          class="absolute size-40 rounded-full bg-intense-pink -bottom-30 -left-15 blur-[100px]"
+        >
+        </div>
+      </div>
+
+      <div
+        id="plan-3meses"
+        data-plan="3meses"
+        class="plan-card flex-1 bg-black/5 border border-white/10 rounded-xl py-3 px-4 flex flex-col relative backdrop-blur-md overflow-hidden z-10 cursor-pointer selected"
+        style="box-shadow: 0 0 20px 2px rgba(255, 20, 147, 0.4);"
+      >
+        <div class="flex items-center justify-between">
+          <h3 class="text-white font-family-secondary font-bold mb-2">
+            3 Meses
+          </h3>
+          <div class="flex items-center gap-2 text-[8px] text-intense-pink">
+            <span class="font-bold">RECOMENDADO</span>
+            <Icon name="ion:checkmark-circle" />
+          </div>
+        </div>
+
+        <div class="flex items-start text-intense-pink">
+          <span class="text-sm self-end mb-2">s/.</span>
+          <span
+            class="text-2xl md:text-7xl transition-transform origin-left font-bold"
+            >16</span
+          >
+        </div>
+
+        <p class="text-pale-pink text-[10px] leading-relaxed">
+          Participas por más de 384 increíbles premios. Te ahorras más de S/36
+          al año, equivale a S/5 al mes.
+        </p>
+        <div
+          class="selection-indicator flex items-center gap-2 text-xs text-pale-pink mt-auto mx-auto mb-4"
+        >
+          <span>Suscripción seleccionada</span>
+          <Icon name="ion:checkbox" />
+        </div>
+
+        <div
+          class="absolute size-40 rounded-full bg-intense-pink -bottom-30 -left-15 blur-[100px]"
+        >
+        </div>
+      </div>
+
+      <div
+        class="absolute bottom-20 -right-4 md:-right-16 w-20 md:w-24 hidden sm:block z-0"
+      >
+        <Image
+          src={devilIcon}
+          alt="Devil"
+          class="w-full transform rotate-17 scale-x-[-1]"
+          width={100}
+          height={100}
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <div class="mt-16">
+      <Button
+        label="SUSCRIBIRME AHORA"
+        onclick="window.location.href='/suscripcion'"
+        class="text-2xl w-full sm:w-auto"
+      />
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const planCards = document.querySelectorAll<HTMLElement>(".plan-card");
+
+    planCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        planCards.forEach((c) => {
+          c.classList.remove("selected");
+          c.style.boxShadow = "";
+          const indicator = c.querySelector(".selection-indicator");
+          if (indicator) {
+            indicator.classList.remove("flex");
+            indicator.classList.add("hidden");
+          }
+        });
+
+        card.classList.add("selected");
+        card.style.boxShadow = "0 0 20px 2px rgba(255, 20, 147, 0.4)";
+        const indicator = card.querySelector(".selection-indicator");
+        if (indicator) {
+          indicator.classList.remove("hidden");
+          indicator.classList.add("flex");
+        }
+      });
+    });
+  });
+</script>

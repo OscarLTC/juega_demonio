@@ -1,0 +1,22 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props extends astroHTML.JSX.ButtonHTMLAttributes {
+  label?: string;
+  variant?: "primary" | "ghost";
+}
+
+const { label, class: className, variant = "primary", ...rest } = Astro.props;
+
+const baseStyles =
+  "px-4 py-1 font-family-display font-bold rounded-md transition-colors uppercase text-lg cursor-pointer";
+
+const variants = {
+  primary: "bg-intense-pink text-white hover:bg-intense-pink/90",
+  ghost: "bg-transparent text-white hover:text-light-gray hover:bg-white/10",
+};
+---
+
+<button class={cn(baseStyles, variants[variant], className)} {...rest}>
+  {label ? label : <slot />}
+</button>

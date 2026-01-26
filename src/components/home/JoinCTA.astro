@@ -1,0 +1,50 @@
+---
+import { Image } from "astro:assets";
+
+import bgTextImg from "../../assets/img/join/bg-text.png";
+import characterImg from "../../assets/img/join/character.png";
+import bannerImg from "../../assets/img/join/banner-card.jpg";
+import Button from "../ui/Button.astro";
+---
+
+<section
+  class="w-full h-[500px] sm:min-h-screen bg-intense-pink relative overflow-hidden flex flex-col items-center justify-center"
+>
+  <div class="absolute top-10 sm:top-25 mx-auto w-full sm:max-w-6xl">
+    <Image
+      src={bgTextImg}
+      alt="Fondo decorativo"
+      class="w-full sm:w-[60%] mx-auto object-cover"
+      loading="lazy"
+    />
+  </div>
+  <div
+    class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+  >
+    <Image
+      src={characterImg}
+      alt="Únete a la comunidad"
+      class="w-auto h-[500px] sm:h-screen drop-shadow-2xl"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="z-10 flex flex-col items-center w-full absolute bottom-10">
+    <div class="relative z-30 mb-[-25px]">
+      <Button
+        label="Quiero Unirme"
+        onclick="window.location.href='/registro'"
+        class="bg-white text-intense-pink text-xl sm:text-3xl hover:bg-intense-pink hover:text-white hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] hover:-translate-y-1 transition-all transform duration-300 border-2 border-white"
+      />
+    </div>
+
+    <div class="relative z-20 w-full px-4">
+      <Image
+        src={bannerImg}
+        alt="Premios de la semana: Teclado, Mouse, Mando"
+        class="w-full sm:w-[90%] md:w-[75%] h-auto rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl border-2 border-white mx-auto"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>

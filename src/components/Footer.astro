@@ -1,0 +1,198 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { cn } from "../utils/cn";
+
+const { showSocialLinks = true } = Astro.props;
+---
+
+<footer class="w-full bg-black mt-auto">
+  <div class={cn("w-full", showSocialLinks ? "bg-pale-pink block" : "hidden")}>
+    <div
+      class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-20 py-8 sm:py-12 flex justify-between"
+    >
+      <h2
+        class="text-intense-pink text-7xl font-bold font-family-nata -skew-x-6"
+      >
+        SÍGUEME PARA ENTERARTE DE MÁS SORTEOS
+      </h2>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a
+          href="https://kick.com/onlyrgx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink transition-all hover:scale-105 rounded"
+          aria-label="Kick"
+        >
+          <Icon
+            name="simple-icons:kick"
+            class="size-10 p-2 bg-intense-pink rounded-md text-pale-pink"
+          />
+        </a>
+
+        <a
+          href="https://www.tiktok.com/@onlyrgxoficial"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink transition-all hover:scale-105"
+          aria-label="TikTok"
+        >
+          <Icon name="ant-design:tik-tok-filled" class="size-10 sm:size-12" />
+        </a>
+        <a
+          href="https://www.instagram.com/onlyrgx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink transition-all hover:scale-105 -p-1"
+          aria-label="Instagram"
+        >
+          <Icon name="ant-design:instagram-filled" class="size-10 sm:size-12" />
+        </a>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-20 py-8 sm:py-12 divide-y-2 divide-intense-pink"
+  >
+    <div class="px-4 sm:px-6 lg:px-10 pb-6 sm:pb-10">
+      <Image
+        src="/logo.png"
+        alt="Juega Demonio"
+        class="h-8 sm:h-10 lg:h-12 w-auto"
+        width={100}
+        height={100}
+        loading="lazy"
+      />
+    </div>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 py-8 sm:py-12 lg:py-16"
+    >
+      <div class="space-y-4 sm:space-y-6">
+        <nav class="flex flex-col gap-2 sm:gap-3">
+          <a
+            href="/terminos"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm"
+          >
+            Términos y condiciones
+          </a>
+          <a
+            href="/privacidad"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm"
+          >
+            Políticas de privacidad
+          </a>
+          <a
+            href="/gestion-calidad"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm"
+          >
+            Política del sistema de gestión de calidad
+          </a>
+          <a
+            href="/cookies"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm"
+          >
+            Política de cookies
+          </a>
+          <a
+            href="/reglamento"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm"
+          >
+            Reglamento
+          </a>
+          <a
+            href="/preguntas-frecuentes"
+            class="text-intense-pink hover:text-intense-pink/80 transition-colors text-xs sm:text-sm font-medium"
+          >
+            Preguntas frecuentes
+          </a>
+        </nav>
+      </div>
+
+      <div class="flex flex-col gap-2 sm:gap-3">
+        <h3 class="text-intense-pink font-semibold text-sm sm:text-base mb-1">
+          ¿Necesitas ayuda?
+        </h3>
+        <div class="flex flex-col gap-2 sm:gap-3">
+          <p class="text-light-pink text-xs sm:text-sm">
+            Envíanos un correo electrónico a:
+          </p>
+          <a
+            href="mailto:soporte@onlyrgx.com"
+            class="text-light-pink hover:text-intense-pink transition-colors text-xs sm:text-sm underline"
+          >
+            soporte@onlyrgx.com
+          </a>
+          <p class="text-light-pink text-xs sm:text-sm">
+            Horario: L - V de 9 a 6pm | Sáb. de 9am a 2pm
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4 sm:space-y-6 md:col-span-2 lg:col-span-1">
+        <div class="flex items-start gap-3">
+          <Icon
+            name="ion:book"
+            class="text-intense-pink hover:text-intense-pink/80 transition-colors w-10 h-10 sm:w-12 sm:h-12 shrink-0"
+          />
+
+          <div>
+            <h4
+              class="text-intense-pink hover:text-intense-pink/80 transition-colors text-xs sm:text-sm mb-2 underline font-medium"
+            >
+              Libro de <br /> Reclamaciones <br /> Aquí
+            </h4>
+            <p class="text-light-pink text-xs sm:text-sm">RUC: 20611347716</p>
+            <p class="text-light-pink text-xs sm:text-sm">
+              JUGA DEMONIO S.A.C.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6"
+    >
+      <p class="text-white text-xs sm:text-sm text-center md:text-left">
+        Copyright © 2025 JUEGA DEMONIO
+      </p>
+
+      <div class="flex items-center gap-4 sm:gap-6">
+        <a
+          href="https://kick.com/onlyrgx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink hover:text-intense-pink/80 transition-all hover:scale-110"
+          aria-label="Kick"
+        >
+          <Icon name="ri:kick-fill" class="w-5 h-5 sm:w-6 sm:h-6" />
+        </a>
+        <a
+          href="https://www.instagram.com/onlyrgx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink hover:text-intense-pink/80 transition-all hover:scale-110"
+          aria-label="Instagram"
+        >
+          <Icon
+            name="ant-design:instagram-filled"
+            class="w-5 h-5 sm:w-6 sm:h-6"
+          />
+        </a>
+        <a
+          href="https://www.tiktok.com/@onlyrgxoficial"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-intense-pink hover:text-intense-pink/80 transition-all hover:scale-110"
+          aria-label="TikTok"
+        >
+          <Icon
+            name="ant-design:tik-tok-filled"
+            class="w-5 h-5 sm:w-6 sm:h-6"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
