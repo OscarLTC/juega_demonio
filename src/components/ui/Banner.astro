@@ -1,0 +1,30 @@
+---
+import { Image } from "astro:assets";
+
+import SunBannerLeft from "../../assets/img/sun-banner-left.svg";
+import SunBannerRight from "../../assets/img/sun-banner-right.svg";
+
+const { title } = Astro.props;
+---
+
+<div class="w-full flex justify-between items-center bg-intense-pink">
+  <Image
+    src={SunBannerLeft}
+    alt="Sun Banner Left"
+    loading="eager"
+    width={100}
+    height={100}
+  />
+  <h1
+    class="text-white text-7xl font-bold font-family-nata -skew-x-6 capitalize"
+  >
+    {title}
+  </h1>
+  <Image
+    src={SunBannerRight}
+    alt="Sun Banner Right"
+    loading="eager"
+    width={100}
+    height={100}
+  />
+</div>

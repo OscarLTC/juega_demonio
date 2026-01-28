@@ -118,52 +118,58 @@ const getLinkClass = (path: string) => {
 </header>
 
 <script>
-  const btn = document.getElementById("mobile-menu-btn");
-  const menu = document.getElementById("mobile-menu");
-  const iconMenu = document.getElementById("icon-menu");
-  const iconClose = document.getElementById("icon-close");
+  function setupMobileMenu() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const iconMenu = document.getElementById("icon-menu");
+    const iconClose = document.getElementById("icon-close");
 
-  let isOpen = false;
+    let isOpen = false;
 
-  btn?.addEventListener("click", () => {
-    isOpen = !isOpen;
+    btn?.addEventListener("click", () => {
+      isOpen = !isOpen;
 
-    if (isOpen) {
-      menu?.classList.remove("opacity-0", "max-h-0", "pointer-events-none");
-      menu?.classList.add(
-        "opacity-100",
-        "max-h-[500px]",
-        "pointer-events-auto",
-      );
-      iconMenu?.classList.add("hidden");
-      iconClose?.classList.remove("hidden");
-    } else {
-      menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
-      menu?.classList.remove(
-        "opacity-100",
-        "max-h-[500px]",
-        "pointer-events-auto",
-      );
-      iconMenu?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
-    }
-  });
+      if (isOpen) {
+        menu?.classList.remove("opacity-0", "max-h-0", "pointer-events-none");
+        menu?.classList.add(
+          "opacity-100",
+          "max-h-[500px]",
+          "pointer-events-auto",
+        );
+        iconMenu?.classList.add("hidden");
+        iconClose?.classList.remove("hidden");
+      } else {
+        menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
+        menu?.classList.remove(
+          "opacity-100",
+          "max-h-[500px]",
+          "pointer-events-auto",
+        );
+        iconMenu?.classList.remove("hidden");
+        iconClose?.classList.add("hidden");
+      }
+    });
 
-  document.addEventListener("click", (e) => {
-    if (
-      isOpen &&
-      !btn?.contains(e.target as Node) &&
-      !menu?.contains(e.target as Node)
-    ) {
-      isOpen = false;
-      menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
-      menu?.classList.remove(
-        "opacity-100",
-        "max-h-[500px]",
-        "pointer-events-auto",
-      );
-      iconMenu?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
-    }
-  });
+    document.addEventListener("click", (e) => {
+      if (
+        isOpen &&
+        !btn?.contains(e.target as Node) &&
+        !menu?.contains(e.target as Node)
+      ) {
+        isOpen = false;
+        menu?.classList.add("opacity-0", "max-h-0", "pointer-events-none");
+        menu?.classList.remove(
+          "opacity-100",
+          "max-h-[500px]",
+          "pointer-events-auto",
+        );
+        iconMenu?.classList.remove("hidden");
+        iconClose?.classList.add("hidden");
+      }
+    });
+  }
+
+  setupMobileMenu();
+
+  document.addEventListener("astro:page-load", setupMobileMenu);
 </script>
