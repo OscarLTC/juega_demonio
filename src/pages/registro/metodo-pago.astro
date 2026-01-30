@@ -1,0 +1,89 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import RegistroLayout from "../../components/registro/RegistroLayout.astro";
+import PaymentMethodCard from "../../components/registro/PaymentMethodCard.astro";
+import PagoRecurrenteModal from "../../components/registro/PagoRecurrenteModal.astro";
+import YapeModal from "../../components/registro/YapeModal.astro";
+import yapeLogo from "../../assets/img/icons/yape.png";
+---
+
+<Layout title="Método de Pago | Juega Demonio">
+  <RegistroLayout
+    currentStep={2}
+    subtitle="Selecciona tu método de pago"
+  >
+    <form id="metodo-pago-form" class="space-y-8">
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <PaymentMethodCard
+          id="recurrente"
+          name="metodo-pago"
+          title="Pago Recurrente"
+          description="Tu suscripción se renovará automáticamente según el tiempo del plan elegido"
+          selected={true}
+        >
+          <div class="flex flex-col items-end gap-0.5">
+            <span class="text-[6px] text-[#E9E9E9]">Aceptamos todas las tarjetas</span>
+            <div class="flex gap-0.5 bg-[#D9D9D9] rounded-[3px] p-1">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/100px-Visa_Inc._logo.svg.png" alt="Visa" class="h-[12px] w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/100px-Mastercard-logo.svg.png" alt="Mastercard" class="h-[12px] w-auto object-contain" />
+            </div>
+          </div>
+        </PaymentMethodCard>
+
+        <PaymentMethodCard
+          id="yape"
+          name="metodo-pago"
+          title="Pago Manual"
+          description="Tu suscripción se renovará cuando vuelvas a yapear, después del vencimiento de tu plan"
+        >
+          <img
+            src={yapeLogo.src}
+            alt="Yape"
+            class="h-[46px] w-auto object-contain"
+          />
+        </PaymentMethodCard>
+      </div>
+
+      <div class="flex gap-4 justify-center pt-4">
+        <a
+          href="/registro/seleccionar-plan"
+          class="px-8 py-2.5 border-2 border-pale-pink text-white font-family-display font-bold text-xl rounded-full hover:bg-white/10 transition-colors"
+        >
+          REGRESAR
+        </a>
+        <button
+          type="submit"
+          class="px-8 py-2.5 bg-[#FD0383] text-white font-family-display font-bold text-xl rounded-full hover:bg-[#FD0383]/90 transition-colors"
+        >
+          PAGAR
+        </button>
+      </div>
+    </form>
+
+    <PagoRecurrenteModal />
+    <YapeModal />
+  </RegistroLayout>
+</Layout>
+
+<script>
+  function initMetodoPagoForm() {
+    const form = document.getElementById('metodo-pago-form') as HTMLFormElement;
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const metodoPago = formData.get('metodo-pago');
+
+      if (metodoPago === 'recurrente') {
+        // Abrir modal de pago con tarjeta
+        (window as any).openPagoRecurrenteModal?.();
+      } else if (metodoPago === 'yape') {
+        // Abrir modal de Yape
+        (window as any).openYapeModal?.();
+      }
+    });
+  }
+
+  initMetodoPagoForm();
+  document.addEventListener('astro:after-swap', initMetodoPagoForm);
+</script>

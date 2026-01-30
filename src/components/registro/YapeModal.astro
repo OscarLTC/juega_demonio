@@ -1,0 +1,130 @@
+---
+import yapeLogo from "../../assets/img/icons/yape.png";
+
+interface Props {
+  isOpen?: boolean;
+  precio?: number;
+}
+
+const { isOpen = false, precio = 6 } = Astro.props;
+---
+
+<div
+  id="yape-modal"
+  class:list={[
+    "fixed inset-0 z-50 flex items-center justify-center",
+    isOpen ? "flex" : "hidden"
+  ]}
+>
+  <div class="absolute inset-0 bg-black/53" data-close-modal></div>
+
+  <div class="relative w-[427px] bg-[#FFE6F3] rounded-[10px] p-8">
+    <button
+      type="button"
+      data-close-modal
+      class="absolute top-4 right-4 text-[#4D4D4D] hover:text-[#202020] transition-colors"
+    >
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+
+    <h2 class="text-center font-family-display font-bold text-[45.67px] leading-[55px] text-[#FD0383] mb-4">
+      DEMONI@
+    </h2>
+
+    <p class="text-center text-[#4D4D4D] text-sm mb-6">
+      Ingresa a la <span class="font-bold">App de Yape</span> y copia el código para<br/>
+      terminar tu compra.
+    </p>
+
+    <form id="yape-form" class="space-y-4">
+      <div>
+        <label class="block text-[#FE56AC] font-medium text-[15px] mb-2">
+          Ingresa tu celular de yape
+        </label>
+        <input
+          type="tel"
+          name="celular-yape"
+          placeholder="Ingresa tu celular"
+          maxlength="9"
+          class="w-full h-[43px] px-4 bg-[#FAF9F9] border border-[#FE8BC6] rounded-[7px] text-sm text-[#4D4D4D] placeholder:text-[#4D4D4D]/70 focus:outline-none focus:border-[#FD0383]"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-[#FE56AC] font-medium text-[15px] mb-2">
+          Ingresa tu código de aprobación
+        </label>
+        <input
+          type="text"
+          name="codigo-yape"
+          placeholder="Ingresa tu código"
+          class="w-full h-[43px] px-4 bg-[#FAF9F9] border border-[#FE8BC6] rounded-[7px] text-sm text-[#4D4D4D] placeholder:text-[#4D4D4D]/70 focus:outline-none focus:border-[#FD0383]"
+          required
+        />
+        <p class="text-[11px] text-[#4D4D4D] mt-1">
+          Encuéntralo en el menú de YAPE
+        </p>
+      </div>
+
+      <button
+        type="submit"
+        class="w-[290px] mx-auto block h-[34px] bg-[#FD359C] rounded-[7px] text-white font-family-display font-bold text-xl hover:bg-[#FD359C]/90 transition-colors"
+      >
+        YAPEAR S/.<span id="yape-precio">{precio}.00</span>
+      </button>
+    </form>
+
+    <div class="flex justify-center mt-6">
+      <img
+        src={yapeLogo.src}
+        alt="Yape"
+        class="h-[67px] w-auto object-contain"
+      />
+    </div>
+  </div>
+</div>
+
+<script>
+  function initYapeModal() {
+    const modal = document.getElementById('yape-modal');
+    const closeButtons = modal?.querySelectorAll('[data-close-modal]');
+    const form = document.getElementById('yape-form') as HTMLFormElement;
+
+    closeButtons?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal?.classList.add('hidden');
+        modal?.classList.remove('flex');
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+        modal?.classList.add('hidden');
+        modal?.classList.remove('flex');
+      }
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Verificando pago Yape...');
+      window.location.href = '/registro/confirmacion';
+    });
+  }
+
+  (window as any).openYapeModal = () => {
+    const modal = document.getElementById('yape-modal');
+    const selectedPlan = localStorage.getItem('selectedPlan');
+    const precioSpan = document.getElementById('yape-precio');
+    if (precioSpan) {
+      precioSpan.textContent = selectedPlan === 'mensual' ? '6.00' : '16.00';
+    }
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+  };
+
+  initYapeModal();
+  document.addEventListener('astro:after-swap', initYapeModal);
+</script>

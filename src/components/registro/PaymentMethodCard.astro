@@ -1,0 +1,39 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  selected?: boolean;
+}
+
+const { id, name, title, description, selected = false } = Astro.props;
+---
+
+<label
+  data-method={id}
+  class="payment-card relative p-3 rounded-lg cursor-pointer transition-all bg-[#FD0383] border-[3px] border-[#FE56AC] w-full max-w-[263px] h-[108px]"
+>
+  <div class="absolute top-3 left-3">
+    <input
+      type="radio"
+      name={name}
+      value={id}
+      checked={selected}
+      class="sr-only peer"
+    />
+    <div class="w-[13px] h-[13px] rounded-full border-2 border-pale-pink peer-checked:border-[3px] transition-all"></div>
+  </div>
+
+  <h3 class="font-family-display font-bold text-xl text-pale-pink leading-none ml-6 mb-2">
+    {title}
+  </h3>
+
+  <p class="text-[11px] leading-[14px] font-light text-pale-pink max-w-[142px] ml-6">
+    {description}
+  </p>
+
+  <div class="absolute right-3 top-[31px]">
+    <slot />
+  </div>
+</label>

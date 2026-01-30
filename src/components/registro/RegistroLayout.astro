@@ -1,0 +1,38 @@
+---
+import Stepper from "../ui/Stepper.astro";
+import { fade } from "astro:transitions";
+
+interface Props {
+  currentStep: number;
+  title?: string;
+  subtitle?: string;
+}
+
+const { currentStep, title = "SUSCRIPCIÓN", subtitle } = Astro.props;
+
+const steps = [
+  { label: "Crea tu cuenta", href: "/registro" },
+  { label: "Tipo de suscripción", href: "/registro/seleccionar-plan" },
+  { label: "Pago", href: "/registro/metodo-pago" }
+];
+---
+
+<div class="bg-[#0C0C0C] min-h-[calc(100vh-200px)] py-8 md:py-12" transition:animate={fade({ duration: '0.3s' })}>
+  <div class="max-w-4xl mx-auto px-4 md:px-6">
+    <h1 class="text-pale-pink font-family-display font-bold text-3xl md:text-[48px] leading-tight mb-6 md:mb-8">
+      {title}
+    </h1>
+
+    <div class="mb-6 md:mb-8">
+      <Stepper steps={steps} currentStep={currentStep} />
+    </div>
+
+    {subtitle && (
+      <p class="text-pale-pink text-sm font-medium mb-6">
+        {subtitle}
+      </p>
+    )}
+
+    <slot />
+  </div>
+</div>

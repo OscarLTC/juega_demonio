@@ -1,0 +1,129 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import RegistroLayout from "../../components/registro/RegistroLayout.astro";
+import PlanCard from "../../components/registro/PlanCard.astro";
+import Checkbox from "../../components/ui/Checkbox.astro";
+---
+
+<Layout title="Seleccionar Plan | Juega Demonio">
+  <RegistroLayout
+    currentStep={1}
+    subtitle="Selecciona uno de los 2 planes | Participarás en todos los premios mientras tu suscripción esté activa."
+  >
+    <form id="plan-form" class="space-y-8">
+      <div class="flex flex-col md:flex-row gap-6 justify-center">
+        <PlanCard
+          id="mensual"
+          name="Mensual"
+          price={6}
+          description="Participas por más de 32 increíbles premios al mes, mientras tu suscripción se encuentre activa."
+        />
+
+        <PlanCard
+          id="3meses"
+          name="3 Meses"
+          price={16}
+          description="Participas por más de 384 increíbles premios. Te ahorras más de S/36 al año, equivale a S/5 al mes."
+          recommended={true}
+          selected={true}
+        />
+      </div>
+
+      <div class="flex justify-center">
+        <Checkbox
+          name="terms"
+          label="Acepto política de Privacidad y términos y condiciones"
+          required
+        />
+      </div>
+
+      <p class="text-white text-[10px] font-light text-center">
+        La suscripción MENSUAL S/6 y 3 MESES S/16 se renovarán automáticamente en tu tarjeta.
+      </p>
+
+      <div class="flex gap-4 justify-center pt-2">
+        <a
+          href="/registro/datos"
+          class="px-8 py-2.5 border-2 border-pale-pink text-white font-family-display font-bold text-xl rounded-full hover:bg-white/10 transition-colors"
+        >
+          REGRESAR
+        </a>
+        <button
+          type="submit"
+          class="px-8 py-2.5 bg-[#FD359C] text-white font-family-display font-bold text-xl rounded-full hover:bg-[#FD359C]/90 transition-colors"
+        >
+          REALIZAR COMPRA
+        </button>
+      </div>
+    </form>
+  </RegistroLayout>
+</Layout>
+
+<script>
+  function initPlanForm() {
+    const planCards = document.querySelectorAll<HTMLElement>('.plan-card');
+    let selectedPlan = '3meses';
+
+    planCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        planCards.forEach((c) => {
+          c.classList.remove('selected', 'shadow-[0_0_20px_rgba(253,3,131,0.55)]');
+          const indicator = c.querySelector('.selection-indicator');
+          if (indicator) {
+            indicator.classList.remove('flex');
+            indicator.classList.add('hidden');
+          }
+          const title = c.querySelector('.plan-title');
+          const price = c.querySelector('.plan-price');
+          const desc = c.querySelector('.plan-description');
+          if (title) {
+            title.classList.remove('text-white');
+            title.classList.add('text-pale-pink');
+          }
+          if (price) {
+            price.classList.remove('text-[#FD0383]');
+            price.classList.add('text-[#FE8BC6]');
+          }
+          if (desc) {
+            desc.classList.remove('text-[#FEB1D9]');
+            desc.classList.add('text-pale-pink');
+          }
+        });
+
+        card.classList.add('selected', 'shadow-[0_0_20px_rgba(253,3,131,0.55)]');
+        const indicator = card.querySelector('.selection-indicator');
+        if (indicator) {
+          indicator.classList.remove('hidden');
+          indicator.classList.add('flex');
+        }
+        const title = card.querySelector('.plan-title');
+        const price = card.querySelector('.plan-price');
+        const desc = card.querySelector('.plan-description');
+        if (title) {
+          title.classList.remove('text-pale-pink');
+          title.classList.add('text-white');
+        }
+        if (price) {
+          price.classList.remove('text-[#FE8BC6]');
+          price.classList.add('text-[#FD0383]');
+        }
+        if (desc) {
+          desc.classList.remove('text-pale-pink');
+          desc.classList.add('text-[#FEB1D9]');
+        }
+
+        selectedPlan = card.dataset.plan || '';
+      });
+    });
+
+    const form = document.getElementById('plan-form') as HTMLFormElement;
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      localStorage.setItem('selectedPlan', selectedPlan);
+      window.location.href = '/registro/metodo-pago';
+    });
+  }
+
+  initPlanForm();
+  document.addEventListener('astro:after-swap', initPlanForm);
+</script>

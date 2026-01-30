@@ -1,0 +1,46 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props extends astroHTML.JSX.SelectHTMLAttributes {
+  label?: string;
+  options: Option[];
+}
+
+const { label, options, class: className, id, ...rest } = Astro.props;
+
+const selectId = id || rest.name;
+---
+
+<div class="w-full">
+  {label && (
+    <label for={selectId} class="block text-light-pink text-xs mb-2">
+      {label}
+    </label>
+  )}
+  <div class="relative">
+    <select
+      id={selectId}
+      class={cn(
+        "w-full bg-secondary border border-charcoal rounded-full px-5 py-2.5",
+        "text-white text-sm appearance-none cursor-pointer",
+        "focus:border-intense-pink focus:outline-none transition-colors",
+        className
+      )}
+      {...rest}
+    >
+      {options.map((option) => (
+        <option value={option.value}>{option.label}</option>
+      ))}
+    </select>
+    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+      <svg class="w-4 h-4 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </div>
+</div>
