@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AuthLayout from "../components/auth/AuthLayout.astro";
+import AuthHeader from "../components/auth/AuthHeader.astro";
+import Input from "../components/ui/Input.astro";
+import PasswordInput from "../components/ui/PasswordInput.astro";
+import Button from "../components/ui/Button.astro";
+import Divider from "../components/ui/Divider.astro";
+import GoogleButton from "../components/ui/GoogleButton.astro";
+
+import loginHero from "../assets/img/login-hero.jpg";
+---
+
+<Layout title="Iniciar Sesión | Juega Demonio">
+  <AuthLayout
+    heroImage={loginHero}
+    heroAlt="Iniciar Sesión Juega Demonio"
+    heroTitle="¿Aún no tienes cuenta Demonio?"
+    heroButtonText="REGÍSTRATE"
+    heroButtonHref="/registro"
+    heroButtonVariant="primary"
+  >
+    <AuthHeader
+      title="¡HOLA NUEVAMENTE!"
+      linkLabel="¿Aún no tienes cuenta?"
+      linkText="Suscríbete"
+      linkHref="/registro"
+    />
+
+    <p class="text-intense-pink font-semibold text-sm mb-6">
+      Inicia Sesión
+    </p>
+
+    <form id="login-form" class="space-y-5">
+      <Input
+        label="Correo"
+        type="email"
+        name="email"
+        placeholder="Ingresa tu Correo"
+        required
+      />
+
+      <PasswordInput
+        label="Contraseña"
+        name="password"
+        placeholder="Ingresa tu contraseña"
+        required
+      />
+
+      <div class="text-right">
+        <a
+          href="/recuperar-contrasena"
+          class="text-xs text-charcoal hover:text-soft-pink transition-colors"
+        >
+          No recuerdo mi contraseña
+        </a>
+      </div>
+
+      <div class="pt-2 flex justify-center">
+        <Button type="submit" label="INICIAR SESIÓN" />
+      </div>
+    </form>
+
+    <Divider text="O continúa con" />
+
+    <div class="flex justify-center">
+      <GoogleButton />
+    </div>
+  </AuthLayout>
+</Layout>
+
+<script>
+  function initLoginForm() {
+    const form = document.getElementById("login-form") as HTMLFormElement;
+
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      // Aquí iría la lógica de autenticación
+      window.location.href = "/";
+    });
+  }
+
+  initLoginForm();
+  document.addEventListener("astro:after-swap", initLoginForm);
+</script>

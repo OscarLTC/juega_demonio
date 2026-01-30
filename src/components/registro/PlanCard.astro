@@ -1,0 +1,79 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  recommended?: boolean;
+  selected?: boolean;
+}
+
+const { id, name, price, description, recommended = false, selected = false } = Astro.props;
+---
+
+<div
+  id={id}
+  data-plan={id}
+  class:list={[
+    "plan-card relative flex flex-col rounded-[12px] cursor-pointer transition-all overflow-hidden",
+    "w-full max-w-[227px] min-h-[280px]",
+    selected && "selected shadow-[0_0_20px_rgba(253,3,131,0.55)]"
+  ]}
+>
+  <div class="plan-bg absolute inset-0 rounded-[12px]"></div>
+
+  <div class="relative z-10 flex flex-col h-full p-5">
+    <div class="flex justify-between items-start mb-2">
+      <h3 class:list={[
+        "plan-title font-semibold text-sm",
+        selected ? "text-white" : "text-pale-pink"
+      ]}>
+        {name}
+      </h3>
+      {recommended && (
+        <div class="flex items-center gap-1 text-[7px] text-[#FD0383] font-semibold">
+          <span>RECOMENDADO</span>
+          <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      )}
+    </div>
+
+    <div class:list={[
+      "plan-price flex items-baseline mb-4",
+      selected ? "text-[#FD0383]" : "text-[#FE8BC6]"
+    ]}>
+      <span class="text-sm font-bold">s/.</span>
+      <span class="text-5xl font-black leading-none">{price}</span>
+    </div>
+
+    <p class:list={[
+      "plan-description text-[8px] leading-[10px] font-semibold flex-1",
+      selected ? "text-[#FEB1D9]" : "text-pale-pink"
+    ]}>
+      {description}
+    </p>
+
+    <div class:list={[
+      "selection-indicator items-center gap-2 text-[10px] text-pale-pink mt-4 justify-center",
+      selected ? "flex" : "hidden"
+    ]}>
+      <span>Suscripción seleccionada</span>
+      <svg class="w-4 h-4 text-[#FD0383]" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style>
+  .plan-card .plan-bg {
+    background: radial-gradient(circle at 0% 100%, rgba(253, 3, 131, 0.4) 0%, rgba(23, 23, 23, 0.8) 50%, rgba(12, 12, 12, 0.9) 100%);
+    backdrop-filter: blur(14px);
+  }
+
+  .plan-card.selected .plan-bg {
+    background: radial-gradient(circle at 0% 100%, rgba(253, 3, 131, 0.8) 0%, rgba(23, 23, 23, 0.6) 50%, rgba(12, 12, 12, 0.9) 100%);
+  }
+</style>

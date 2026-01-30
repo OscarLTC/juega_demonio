@@ -1,0 +1,119 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AuthLayout from "../components/auth/AuthLayout.astro";
+import AuthHeader from "../components/auth/AuthHeader.astro";
+import Input from "../components/ui/Input.astro";
+import PasswordInput from "../components/ui/PasswordInput.astro";
+import Checkbox from "../components/ui/Checkbox.astro";
+import Button from "../components/ui/Button.astro";
+import Divider from "../components/ui/Divider.astro";
+import GoogleButton from "../components/ui/GoogleButton.astro";
+
+import loginHero from "../assets/img/login-hero.jpg";
+---
+
+<Layout title="Registro | Juega Demonio">
+  <AuthLayout
+    heroImage={loginHero}
+    heroAlt="Registro Juega Demonio"
+    heroTitle="¿Demonio ya tienes una cuenta?"
+    heroButtonText="INICIAR SESIÓN"
+    heroButtonHref="/login"
+    heroButtonVariant="secondary"
+  >
+    <AuthHeader
+      title="¡PON A PRUEBA TU SUERTE!"
+      subtitle="Participa por premios semanales y beneficios exclusivos"
+      linkLabel="¿Ya tienes una cuenta?"
+      linkText="Inicia Sesión"
+      linkHref="/login"
+    />
+
+    <form id="registro-form" class="space-y-5">
+      <Input
+        label="Correo"
+        type="email"
+        name="email"
+        placeholder="Ingresa tu Correo"
+        required
+      />
+
+      <PasswordInput
+        label="Contraseña"
+        name="password"
+        placeholder="Ingresa la contraseña"
+        required
+        minlength={8}
+      />
+
+      <div>
+        <PasswordInput
+          label="Confirma tu contraseña"
+          name="confirm-password"
+          placeholder="Ingresa la contraseña"
+          required
+          minlength={8}
+          error="Las contraseñas no coinciden"
+        />
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <Checkbox
+          name="terms"
+          label="Acepto política de Privacidad y términos y condiciones"
+          required
+        />
+        <Checkbox
+          name="promotions"
+          label="Acepto el envío de comunicaciones con promociones y/o publicidad"
+        />
+      </div>
+
+      <div class="pt-4 flex justify-center">
+        <Button type="submit" label="SUSCRIBIRME" />
+      </div>
+    </form>
+
+    <Divider text="O continua con" />
+
+    <div class="flex justify-center">
+      <GoogleButton />
+    </div>
+  </AuthLayout>
+</Layout>
+
+<script>
+  function initRegistroForm() {
+    const form = document.getElementById("registro-form") as HTMLFormElement;
+    const passwordInput = document.getElementById("password") as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById("confirm-password") as HTMLInputElement;
+    const passwordError = document.querySelector('[data-password-error="confirm-password"]');
+
+    form?.addEventListener("submit", (e) => {
+      const password = passwordInput?.value;
+      const confirmPassword = confirmPasswordInput?.value;
+
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        passwordError?.classList.remove("hidden");
+        confirmPasswordInput?.focus();
+        return;
+      }
+
+      passwordError?.classList.add("hidden");
+      e.preventDefault();
+      window.location.href = "/registro/validar-dni";
+    });
+
+    confirmPasswordInput?.addEventListener("input", () => {
+      if (confirmPasswordInput.value && passwordInput?.value !== confirmPasswordInput.value) {
+        passwordError?.classList.remove("hidden");
+      } else {
+        passwordError?.classList.add("hidden");
+      }
+    });
+  }
+
+  initRegistroForm();
+  document.addEventListener("astro:after-swap", initRegistroForm);
+</script>

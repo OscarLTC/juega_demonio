@@ -1,0 +1,24 @@
+---
+interface Props extends astroHTML.JSX.InputHTMLAttributes {
+  label: string;
+}
+
+const { label, id, ...rest } = Astro.props;
+
+const inputId = id || rest.name;
+---
+
+<label class="flex items-start gap-3 cursor-pointer group">
+  <div class="relative mt-0.5">
+    <input
+      type="checkbox"
+      id={inputId}
+      class="peer sr-only"
+      {...rest}
+    />
+    <div class="w-3 h-3 border border-intense-pink peer-checked:bg-intense-pink transition-colors"></div>
+  </div>
+  <span class="text-xs text-white leading-relaxed">
+    {label}
+  </span>
+</label>

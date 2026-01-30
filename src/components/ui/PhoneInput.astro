@@ -1,0 +1,36 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props extends astroHTML.JSX.InputHTMLAttributes {
+  label?: string;
+  countryCode?: string;
+}
+
+const { label, countryCode = "+51", class: className, id, ...rest } = Astro.props;
+
+const inputId = id || rest.name;
+---
+
+<div class="w-full">
+  {label && (
+    <label for={inputId} class="block text-light-pink text-xs mb-2">
+      {label}
+    </label>
+  )}
+  <div class="flex">
+    <div class="flex items-center bg-secondary border border-charcoal border-r-0 rounded-l-full px-4 text-intense-pink text-xs font-medium">
+      {countryCode}
+    </div>
+    <input
+      id={inputId}
+      type="tel"
+      class={cn(
+        "flex-1 bg-secondary border border-charcoal rounded-r-full px-4 py-2.5",
+        "text-white text-sm placeholder-charcoal",
+        "focus:border-intense-pink focus:outline-none transition-colors",
+        className
+      )}
+      {...rest}
+    />
+  </div>
+</div>

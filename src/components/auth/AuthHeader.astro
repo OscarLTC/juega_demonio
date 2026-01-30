@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  linkText?: string;
+  linkHref?: string;
+  linkLabel?: string;
+}
+
+const { title, subtitle, linkText, linkHref, linkLabel } = Astro.props;
+---
+
+<div class="text-center mb-8">
+  <h1 class="font-family-nata text-4xl sm:text-5xl lg:text-6xl text-intense-pink leading-tight mb-4">
+    {title}
+  </h1>
+
+  {subtitle && (
+    <p class="text-pale-pink text-sm lg:text-base mb-4">
+      {subtitle}
+    </p>
+  )}
+
+  {linkLabel && linkHref && linkText && (
+    <p class="text-sm">
+      <span class="text-pale-pink">{linkLabel}</span>
+      <a href={linkHref} class="text-intense-pink hover:underline font-medium ml-1">
+        {linkText}
+      </a>
+    </p>
+  )}
+</div>

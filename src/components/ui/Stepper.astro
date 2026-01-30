@@ -1,0 +1,38 @@
+---
+interface Step {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  steps: Step[];
+  currentStep: number;
+}
+
+const { steps, currentStep } = Astro.props;
+---
+
+<div class="flex items-start gap-8 md:gap-16">
+  {steps.map((step, index) => (
+    <div class="flex flex-col">
+      {step.href && index < currentStep ? (
+        <a
+          href={step.href}
+          class="text-base md:text-xl transition-colors pb-3 border-b-[3px] text-[#4D4D4D] font-medium border-[#FD359C] hover:opacity-80"
+        >
+          {step.label}
+        </a>
+      ) : (
+        <span
+          class:list={[
+            "text-base md:text-xl pb-3 border-b-[3px]",
+            index === currentStep && "text-[#FD359C] font-semibold border-[#FD359C]",
+            index > currentStep && "text-[#4D4D4D] font-medium border-[#4D4D4D]"
+          ]}
+        >
+          {step.label}
+        </span>
+      )}
+    </div>
+  ))}
+</div>

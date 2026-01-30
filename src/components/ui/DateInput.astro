@@ -1,0 +1,33 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props extends astroHTML.JSX.InputHTMLAttributes {
+  label?: string;
+}
+
+const { label, class: className, id, ...rest } = Astro.props;
+
+const inputId = id || rest.name;
+---
+
+<div class="w-full">
+  {label && (
+    <label for={inputId} class="block text-light-pink text-xs mb-2">
+      {label}
+    </label>
+  )}
+  <div class="relative">
+    <input
+      id={inputId}
+      type="date"
+      class={cn(
+        "w-full bg-secondary border border-charcoal rounded-full px-5 py-2.5",
+        "text-white text-sm placeholder-charcoal",
+        "focus:border-intense-pink focus:outline-none transition-colors",
+        "[&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50",
+        className
+      )}
+      {...rest}
+    />
+  </div>
+</div>

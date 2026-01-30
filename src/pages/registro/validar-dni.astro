@@ -1,0 +1,55 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import RegistroLayout from "../../components/registro/RegistroLayout.astro";
+import Select from "../../components/ui/Select.astro";
+import Input from "../../components/ui/Input.astro";
+import Button from "../../components/ui/Button.astro";
+---
+
+<Layout title="Validar DNI | Juega Demonio">
+  <RegistroLayout
+    currentStep={0}
+    subtitle="Por favor, Completa tus datos"
+  >
+    <form id="validar-dni-form" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Select
+          label="Tipo de Documento"
+          name="tipo-documento"
+          options={[
+            { value: "dni", label: "DNI" },
+            { value: "ce", label: "Carnet de Extranjería" },
+            { value: "pasaporte", label: "Pasaporte" }
+          ]}
+        />
+
+        <Input
+          label="Número de documento*"
+          type="text"
+          name="numero-documento"
+          placeholder="Ingresa tu número"
+          required
+          maxlength={12}
+        />
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <Button type="submit" label="VALIDAR DOCUMENTO" />
+      </div>
+    </form>
+  </RegistroLayout>
+</Layout>
+
+<script>
+  function initValidarDniForm() {
+    const form = document.getElementById("validar-dni-form") as HTMLFormElement;
+
+    form?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      window.location.href = "/registro/datos";
+    });
+  }
+
+  initValidarDniForm();
+  document.addEventListener("astro:after-swap", initValidarDniForm);
+</script>
