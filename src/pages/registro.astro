@@ -1,0 +1,326 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<Layout title="Registro | Juega Demonio">
+  <div class="bg-[#171717] min-h-[calc(100vh-100px)] relative overflow-hidden">
+    <!-- Efecto de glow rosa en la esquina superior derecha -->
+    <div
+      class="absolute -right-32 top-1/3 w-[400px] h-[400px] bg-intense-pink/30 rounded-full blur-[150px] pointer-events-none"
+    >
+    </div>
+
+    <div class="flex flex-col lg:flex-row min-h-[calc(100vh-100px)]">
+      <!-- Lado izquierdo - Imagen con gradiente -->
+      <div class="relative w-full lg:w-1/2 min-h-[300px] lg:min-h-full">
+        <!-- Imagen de fondo -->
+        <div class="absolute inset-0">
+          <img
+            src="https://www.figma.com/api/mcp/asset/bc3f6979-bc89-4757-a4fe-d9ce1756a082"
+            alt="Registro Juega Demonio"
+            class="w-full h-full object-cover"
+          />
+          <!-- Gradiente overlay -->
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-intense-pink/50"
+          >
+          </div>
+        </div>
+
+        <!-- Contenido sobre la imagen -->
+        <div
+          class="absolute bottom-8 lg:bottom-16 left-6 lg:left-10 right-6 z-10"
+        >
+          <h2
+            class="font-family-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-6"
+          >
+            ¿Demonio ya tienes una cuenta?
+          </h2>
+          <a
+            href="/login"
+            class="inline-flex items-center justify-center bg-pale-pink text-intense-pink font-family-display font-bold text-xl sm:text-2xl lg:text-3xl px-6 lg:px-8 py-2 lg:py-3 rounded-xl hover:bg-white transition-colors"
+          >
+            INICIAR SESIÓN
+          </a>
+        </div>
+      </div>
+
+      <!-- Lado derecho - Formulario -->
+      <div
+        class="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:py-0"
+      >
+        <div class="w-full max-w-md">
+          <!-- Título -->
+          <h1
+            class="font-family-nata text-4xl sm:text-5xl lg:text-6xl text-intense-pink text-center leading-tight mb-4"
+          >
+            ¡PON A PRUEBA TU SUERTE!
+          </h1>
+
+          <!-- Subtítulo -->
+          <p class="text-pale-pink text-center text-sm lg:text-base mb-4">
+            Participa por premios semanales y beneficios exclusivos
+          </p>
+
+          <!-- Link a login -->
+          <p class="text-center text-sm mb-8">
+            <span class="text-pale-pink">¿Ya tienes una cuenta?</span>
+            <a
+              href="/login"
+              class="text-intense-pink hover:underline font-medium ml-1"
+            >
+              Inicia Sesión
+            </a>
+          </p>
+
+          <!-- Formulario -->
+          <form id="registro-form" class="space-y-5">
+            <!-- Email -->
+            <div>
+              <label
+                for="email"
+                class="block text-soft-pink text-sm font-medium mb-2"
+              >
+                Correo
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Ingresa tu Correo"
+                required
+                class="w-full bg-secondary border border-soft-pink rounded-full px-6 py-3 text-white placeholder-charcoal focus:border-intense-pink focus:outline-none transition-colors"
+              />
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+              <label
+                for="password"
+                class="block text-soft-pink text-sm font-medium mb-2"
+              >
+                Contraseña
+              </label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Ingresa la contraseña"
+                  required
+                  minlength="8"
+                  class="w-full bg-secondary border border-soft-pink rounded-full px-6 py-3 text-white placeholder-charcoal focus:border-intense-pink focus:outline-none transition-colors pr-12"
+                />
+                <button
+                  type="button"
+                  id="toggle-password"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal hover:text-light-gray transition-colors"
+                >
+                  <Icon id="icon-eye" name="ion:eye-outline" class="w-5 h-5" />
+                  <Icon
+                    id="icon-eye-off"
+                    name="ion:eye-off-outline"
+                    class="w-5 h-5 hidden"
+                  />
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirmar Contraseña -->
+            <div>
+              <label
+                for="confirm-password"
+                class="block text-soft-pink text-sm font-medium mb-2"
+              >
+                Confirma tu contraseña
+              </label>
+              <div class="relative">
+                <input
+                  type="password"
+                  id="confirm-password"
+                  name="confirm-password"
+                  placeholder="Ingresa la contraseña"
+                  required
+                  minlength="8"
+                  class="w-full bg-secondary border border-soft-pink rounded-full px-6 py-3 text-white placeholder-charcoal focus:border-intense-pink focus:outline-none transition-colors pr-12"
+                />
+                <button
+                  type="button"
+                  id="toggle-confirm-password"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal hover:text-light-gray transition-colors"
+                >
+                  <Icon
+                    id="icon-eye-confirm"
+                    name="ion:eye-outline"
+                    class="w-5 h-5"
+                  />
+                  <Icon
+                    id="icon-eye-off-confirm"
+                    name="ion:eye-off-outline"
+                    class="w-5 h-5 hidden"
+                  />
+                </button>
+              </div>
+              <p id="password-error" class="text-xs text-red-500 mt-2 hidden">
+                Las contraseñas no coinciden
+              </p>
+            </div>
+
+            <!-- Términos y condiciones -->
+            <div class="space-y-3 pt-2">
+              <label class="flex items-start gap-3 cursor-pointer group">
+                <div class="relative mt-0.5">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    required
+                    class="peer sr-only"
+                  />
+                  <div
+                    class="w-3 h-3 border border-intense-pink peer-checked:bg-intense-pink transition-colors"
+                  >
+                  </div>
+                </div>
+                <span class="text-xs text-white leading-relaxed">
+                  Acepto política de Privacidad y términos y condiciones
+                </span>
+              </label>
+
+              <label class="flex items-start gap-3 cursor-pointer group">
+                <div class="relative mt-0.5">
+                  <input
+                    type="checkbox"
+                    id="promotions"
+                    name="promotions"
+                    class="peer sr-only"
+                  />
+                  <div
+                    class="w-3 h-3 border border-intense-pink peer-checked:bg-intense-pink transition-colors"
+                  >
+                  </div>
+                </div>
+                <span class="text-xs text-white leading-relaxed">
+                  Acepto el envío de comunicaciones con promociones y/o
+                  publicidad
+                </span>
+              </label>
+            </div>
+
+            <!-- Botón Submit -->
+            <div class="pt-4 flex justify-center">
+              <button
+                type="submit"
+                class="bg-intense-pink text-white font-family-display font-bold text-xl px-8 py-2 rounded-xl hover:bg-intense-pink/90 transition-colors"
+              >
+                SUSCRIBIRME
+              </button>
+            </div>
+          </form>
+
+          <!-- Separador -->
+          <div class="flex items-center gap-4 my-6">
+            <div class="flex-1 h-px bg-charcoal/50"></div>
+            <span class="text-pale-pink text-xs">O continua con</span>
+            <div class="flex-1 h-px bg-charcoal/50"></div>
+          </div>
+
+          <!-- Google login -->
+          <div class="flex justify-center">
+            <button
+              type="button"
+              class="bg-white border border-gray-200 rounded px-8 py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                ></path>
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                ></path>
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                ></path>
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Toggle password visibility
+  const togglePassword = document.getElementById("toggle-password");
+  const passwordInput = document.getElementById("password") as HTMLInputElement;
+  const iconEye = document.getElementById("icon-eye");
+  const iconEyeOff = document.getElementById("icon-eye-off");
+
+  togglePassword?.addEventListener("click", () => {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    iconEye?.classList.toggle("hidden");
+    iconEyeOff?.classList.toggle("hidden");
+  });
+
+  // Toggle confirm password visibility
+  const toggleConfirmPassword = document.getElementById(
+    "toggle-confirm-password"
+  );
+  const confirmPasswordInput = document.getElementById(
+    "confirm-password"
+  ) as HTMLInputElement;
+  const iconEyeConfirm = document.getElementById("icon-eye-confirm");
+  const iconEyeOffConfirm = document.getElementById("icon-eye-off-confirm");
+
+  toggleConfirmPassword?.addEventListener("click", () => {
+    const type =
+      confirmPasswordInput.type === "password" ? "text" : "password";
+    confirmPasswordInput.type = type;
+    iconEyeConfirm?.classList.toggle("hidden");
+    iconEyeOffConfirm?.classList.toggle("hidden");
+  });
+
+  // Form validation
+  const form = document.getElementById("registro-form") as HTMLFormElement;
+  const passwordError = document.getElementById("password-error");
+
+  form?.addEventListener("submit", (e) => {
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (password !== confirmPassword) {
+      e.preventDefault();
+      passwordError?.classList.remove("hidden");
+      confirmPasswordInput.focus();
+      return;
+    }
+
+    passwordError?.classList.add("hidden");
+
+    // Redirigir al siguiente paso
+    e.preventDefault();
+    window.location.href = "/registro/validar-dni";
+  });
+
+  // Real-time password match validation
+  confirmPasswordInput?.addEventListener("input", () => {
+    if (
+      confirmPasswordInput.value &&
+      passwordInput.value !== confirmPasswordInput.value
+    ) {
+      passwordError?.classList.remove("hidden");
+    } else {
+      passwordError?.classList.add("hidden");
+    }
+  });
+</script>
