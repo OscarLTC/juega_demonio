@@ -2,9 +2,85 @@
 import Banner from "../components/ui/Banner.astro";
 import CountdownBanner from "../components/ui/CountdownBanner.astro";
 import Layout from "../layouts/Layout.astro";
+import PrizeIntro from "../components/prizes/PrizeIntro.astro";
+import FeaturedPrize from "../components/prizes/FeaturedPrize.astro";
+import PrizeGridCard from "../components/prizes/PrizeGridCard.astro";
+import type { Prize } from "../types/prize";
+import keyboardImage from "../assets/img/prizes/keyboard.png";
+import mouseImage from "../assets/img/prizes/mouse.png";
+import controllerImage from "../assets/img/prizes/controller.png";
+import soundbarImage from "../assets/img/prizes/soundbar.png";
+import PrizeGrid from "../components/prizes/PrizeGrid.astro";
+
+const featuredPrize: Prize = {
+  name: "WOOTING 60HE",
+  image: keyboardImage,
+  date: "2026-08-28",
+  link: "#",
+};
+
+const prizes = [
+  {
+    name: "DARKNETS GS670",
+    image: soundbarImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "WOOTING 60HE",
+    image: keyboardImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "WLMOUSE BEAST X MINI PRO",
+    image: mouseImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+  {
+    name: "RIFT G710",
+    image: controllerImage,
+    date: "2026-10-23",
+    link: "#",
+  },
+];
 ---
 
 <Layout title="Premios">
   <Banner title="Premios Disponibles" />
+  <PrizeIntro />
+  <FeaturedPrize prize={featuredPrize} />
   <CountdownBanner variant="dark" showInfluencer={false} />
+  <PrizeGrid prizes={prizes} />
 </Layout>

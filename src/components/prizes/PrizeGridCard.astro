@@ -1,0 +1,37 @@
+---
+import PrizeCard from "./PrizeCard.astro";
+import Button from "../ui/Button.astro";
+import type { ImageMetadata } from "astro";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
+
+interface Props {
+  name: string;
+  image: ImageMetadata | string;
+  date: string;
+  link?: string;
+}
+
+const { name, image, date, link = "#" } = Astro.props;
+
+const dateObj = parseISO(date);
+const day = format(dateObj, "d");
+const month = format(dateObj, "MMMM", { locale: es }).toUpperCase();
+const formattedDate = `${day}/${month}`;
+---
+
+<div class="flex flex-col items-center gap-4">
+  <PrizeCard name={name} image={image} />
+
+  <div
+    class="border-2 border-intense-pink rounded-lg px-6 py-2 bg-black text-white font-bold text-sm uppercase"
+  >
+    {formattedDate}
+  </div>
+
+  <Button
+    label="Suscribirme"
+    onclick={`window.location.href='${link}'`}
+    class="text-xl px-8"
+  />
+</div>

@@ -1,0 +1,62 @@
+---
+import type { Prize } from "../../types/prize";
+import { Image } from "astro:assets";
+import Button from "../ui/Button.astro";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
+
+interface Props {
+  prize: Prize;
+}
+
+const { prize } = Astro.props;
+
+const formattedDate = format(parseISO(prize.date), "EEE. d MMM", {
+  locale: es,
+});
+---
+
+<section
+  class="bg-pale-pink rounded-xl md:rounded-3xl border-4 border-intense-pink overflow-hidden w-full max-w-sm sm:max-w-4xl mx-auto my-18"
+>
+  <div
+    class="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 p-4 md:px-7 md:py-3"
+  >
+    <div
+      class="w-full h-36 md:w-auto flex justify-center items-center bg-white rounded-2xl md:rounded-3xl"
+    >
+      <Image
+        src={prize.image}
+        alt={prize.name}
+        class="w-full h-auto max-w-[200px] md:max-w-[300px] object-cover drop-shadow-lg"
+        width={500}
+        height={500}
+        loading="eager"
+      />
+    </div>
+
+    <div class="flex-1 text-center md:text-left space-y-1">
+      <p
+        class="text-intense-pink font-bold font-family-display text-xl uppercase"
+      >
+        Premio Destacado
+      </p>
+      <h3
+        class="text-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-none font-family-nata -skew-x-6"
+      >
+        {prize.name}
+      </h3>
+      <p class="text-intense-pink font-bold text-sm -skew-x-6">
+        FECHA: <span class="lowercase">{formattedDate}</span>
+      </p>
+    </div>
+
+    <div class="w-full md:w-auto flex justify-center md:justify-end">
+      <Button
+        label="Suscribirme Ahora"
+        onclick={`window.location.href='${prize.link}'`}
+        class="text-3xl px-6"
+      />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+---
+import Button from "../ui/Button.astro";
+---
+
+<section
+  class="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 my-6 md:my-10 max-w-5xl md:mx-auto mx-4"
+>
+  <div class="text-center md:text-left space-y-3 md:space-y-4 w-full md:flex-1">
+    <h2
+      class="text-white text-xl sm:text-2xl lg:text-[30px] font-bold uppercase tracking-wider font-family-display text-shadow-md text-shadow-intense-pink leading-tight"
+    >
+      Tu podrías ganar cualquiera de estos premios
+    </h2>
+    <p class="text-white text-sm sm:text-base md:text-xl lg:text-[22px]">
+      <span class="text-intense-pink font-bold">SUSCRÍBETE AHORA</span>
+      <span class="text-shadow-sm text-shadow-intense-pink">
+        y estarás participando por alguno de
+        <br class="hidden md:block" />
+        estos increíbles periféricos que se renuevan mes a mes.
+      </span>
+    </p>
+  </div>
+
+  <Button
+    label="Quiero Participar"
+    onclick="window.location.href='/registro'"
+    class="text-base sm:text-lg md:text-xl lg:text-3xl w-full md:w-auto md:shrink-0 mt-2 md:mt-0"
+  />
+</section>
