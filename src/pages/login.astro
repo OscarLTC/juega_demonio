@@ -11,7 +11,7 @@ import GoogleButton from "../components/ui/GoogleButton.astro";
 import loginHero from "../assets/img/login-hero.jpg";
 ---
 
-<Layout title="Iniciar Sesión | Juega Demonio">
+<Layout title="Iniciar Sesión | Juega Demonio" showSocialLinks={false}>
   <AuthLayout
     heroImage={loginHero}
     heroAlt="Iniciar Sesión Juega Demonio"
@@ -27,9 +27,7 @@ import loginHero from "../assets/img/login-hero.jpg";
       linkHref="/registro"
     />
 
-    <p class="text-intense-pink font-semibold text-sm mb-6">
-      Inicia Sesión
-    </p>
+    <p class="text-intense-pink font-semibold text-sm mb-6">Inicia Sesión</p>
 
     <form id="login-form" class="space-y-5">
       <Input

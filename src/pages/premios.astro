@@ -1,8 +1,10 @@
 ---
 import Banner from "../components/ui/Banner.astro";
+import CountdownBanner from "../components/ui/CountdownBanner.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Premios">
   <Banner title="Premios Disponibles" />
+  <CountdownBanner variant="dark" showInfluencer={false} />
 </Layout>

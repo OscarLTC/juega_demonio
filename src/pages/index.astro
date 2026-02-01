@@ -1,5 +1,5 @@
 ---
-import CountdownBanner from "../components/home/CountdownBanner.astro";
+import CountdownBanner from "../components/ui/CountdownBanner.astro";
 import FeaturedPrizes from "../components/home/FeaturedPrizes.astro";
 import Hero from "../components/home/Hero.astro";
 import JoinCTA from "../components/home/JoinCTA.astro";
@@ -10,7 +10,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Juega Demonio | Inicio">
   <Hero />
-  <CountdownBanner />
+  <CountdownBanner variant="pink" className="my-10" />
   <FeaturedPrizes />
   <JoinCTA />
   <WinnersShowcase />

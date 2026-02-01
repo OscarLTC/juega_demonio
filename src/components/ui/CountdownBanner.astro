@@ -1,0 +1,178 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import InfluencerImage from "../../assets/img/countdown.png";
+
+interface Props {
+  variant?: "dark" | "pink";
+  showInfluencer?: boolean;
+  className?: string;
+}
+
+const { variant = "pink", showInfluencer = true, className = "" } = Astro.props;
+
+const bgColor = variant === "dark" ? "bg-black" : "bg-intense-pink";
+const borderColor =
+  variant === "dark" ? "border-intense-pink" : "border-pale-pink";
+const textColor = variant === "dark" ? "text-intense-pink" : "text-pale-pink";
+const boxBgColor = variant === "dark" ? "bg-pale-pink" : "bg-pale-pink";
+const boxTextColor =
+  variant === "dark" ? "text-intense-pink" : "text-intense-pink";
+---
+
+<section
+  class={`w-full ${bgColor} py-4 relative overflow-hidden flex justify-center items-center ${className}`}
+  data-countdown-banner
+>
+  <div
+    class={`max-w-3xl w-full flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 md:px-16 py-4 md:py-2 relative z-10 gap-4 md:gap-6 ${borderColor} border-2 rounded-2xl mx-4 md:mx-0`}
+  >
+    <div
+      class={`${textColor} font-medium text-base md:text-base text-center md:text-left leading-tight`}
+    >
+      La lista de <br class="hidden md:block" />
+      participantes <br class="hidden md:block" />
+      cierra en:
+    </div>
+
+    <div class="flex items-center gap-1">
+      <div class="flex flex-col items-center gap-1">
+        <span class={`${textColor} text-xs font-semibold`}>Días</span>
+
+        <div
+          class={`${boxBgColor} ${boxTextColor} size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md`}
+        >
+          <span class="countdown-days">0</span>
+        </div>
+      </div>
+
+      <span
+        class={`${textColor} text-4xl font-bold font-family-display h-11 flex items-end`}
+        >:</span
+      >
+
+      <div class="flex flex-col items-center gap-1">
+        <span class={`${textColor} text-xs font-semibold`}>Horas</span>
+
+        <div
+          class={`${boxBgColor} ${boxTextColor} size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md`}
+        >
+          <span class="countdown-hours">00</span>
+        </div>
+      </div>
+
+      <span
+        class={`${textColor} text-4xl font-bold font-family-display h-11 flex items-end`}
+        >:</span
+      >
+
+      <div class="flex flex-col items-center gap-1">
+        <span class={`${textColor} text-xs font-semibold`}>Minutos</span>
+
+        <div
+          class={`${boxBgColor} ${boxTextColor} size-11 border-2 border-[#FE8BC6] flex items-center justify-center rounded-md font-family-display font-bold text-2xl shadow-md`}
+        >
+          <span class="countdown-minutes">00</span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class={`${boxBgColor} rounded-md px-2 py-1 flex items-center gap-1 border-2 border-[#FE8BC6]`}
+    >
+      <div class={`rounded-md ${boxTextColor}`}>
+        <Icon name="ri:kick-fill" class="size-8" />
+      </div>
+      <div class="flex flex-col text-center leading-5 font-semibold">
+        <span class={`${boxTextColor} text-xs`}>Resultado de los sorteos</span>
+        <span class={`${boxTextColor} text-xs font-bold`}>VIERNES 8:00 PM</span>
+      </div>
+    </div>
+
+    {
+      showInfluencer && (
+        <div class="hidden md:block absolute -top-8 -right-16 pointer-events-none translate-y-4">
+          <Image
+            src={InfluencerImage}
+            alt="Juega Demonio"
+            class="w-[100px] object-contain"
+          />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  function initCountdowns() {
+    const getNextFridayPeru = () => {
+      const now = new Date();
+
+      const peruTimeStr = now.toLocaleString("en-US", {
+        timeZone: "America/Lima",
+      });
+      const nowInPeru = new Date(peruTimeStr);
+      const targetDay = 5;
+      const targetHour = 20;
+
+      const resultDate = new Date(nowInPeru);
+      const currentDay = resultDate.getDay();
+
+      let daysUntil = (targetDay + 7 - currentDay) % 7;
+
+      resultDate.setHours(targetHour, 0, 0, 0);
+
+      if (daysUntil === 0 && nowInPeru.getHours() >= targetHour) {
+        daysUntil = 7;
+      }
+
+      resultDate.setDate(resultDate.getDate() + daysUntil);
+
+      const year = resultDate.getFullYear();
+      const month = String(resultDate.getMonth() + 1).padStart(2, "0");
+      const day = String(resultDate.getDate()).padStart(2, "0");
+
+      const isoTarget = `${year}-${month}-${day}T20:00:00-05:00`;
+
+      return new Date(isoTarget).getTime();
+    };
+
+    const targetTime = getNextFridayPeru();
+
+    const updateCountdown = (banner: Element) => {
+      const now = new Date().getTime();
+      const diff = targetTime - now;
+
+      const elDays = banner.querySelector(".countdown-days");
+      const elHours = banner.querySelector(".countdown-hours");
+      const elMinutes = banner.querySelector(".countdown-minutes");
+
+      if (!elDays || !elHours || !elMinutes) return;
+
+      if (diff < 0) {
+        elDays.textContent = "0";
+        elHours.textContent = "00";
+        elMinutes.textContent = "00";
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      elDays.textContent = d.toString();
+      elHours.textContent = h.toString().padStart(2, "0");
+      elMinutes.textContent = m.toString().padStart(2, "0");
+    };
+
+    const banners = document.querySelectorAll("[data-countdown-banner]");
+    banners.forEach((banner) => {
+      updateCountdown(banner);
+      setInterval(() => updateCountdown(banner), 1000);
+    });
+  }
+
+  initCountdowns();
+
+  document.addEventListener("astro:page-load", initCountdowns);
+</script>
