@@ -68,13 +68,51 @@ import loginHero from "../assets/img/login-hero.jpg";
 </Layout>
 
 <script>
+  import axios from "axios";
+
+  const API_BASE_URL = import.meta.env.PUBLIC_API_URL || "/api";
+
   function initLoginForm() {
     const form = document.getElementById("login-form") as HTMLFormElement;
 
-    form?.addEventListener("submit", (e) => {
+    form?.addEventListener("submit", async (e) => {
       e.preventDefault();
-      // Aquí iría la lógica de autenticación
-      window.location.href = "/";
+
+      const formData = new FormData(form);
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "INICIANDO...";
+      }
+
+      try {
+        const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+        const { accessToken, refreshToken, user } = response.data;
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("cachedUser", JSON.stringify(user));
+        localStorage.setItem("authCheckedAt", String(Date.now()));
+
+        window.location.href = "/app/dashboard";
+      } catch (err: any) {
+        const message = err.response?.data?.message || "Error al iniciar sesión";
+        let errorEl = form.querySelector(".login-error") as HTMLElement;
+        if (!errorEl) {
+          errorEl = document.createElement("p");
+          errorEl.className = "login-error text-red-500 text-sm text-center";
+          form.prepend(errorEl);
+        }
+        errorEl.textContent = message;
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "INICIAR SESIÓN";
+        }
+      }
     });
   }
 

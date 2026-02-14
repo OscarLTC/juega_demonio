@@ -1,0 +1,91 @@
+@reference "./global.css";
+
+/* App section utility classes - dark themed */
+/* Wrapped in @layer components so Tailwind utilities (like pl-10) can override them */
+@layer components {
+  /* Cards */
+  .app-card {
+    @apply bg-dark rounded-xl border border-charcoal/30 p-6;
+  }
+
+  /* Inputs */
+  .app-input {
+    @apply w-full bg-secondary border border-charcoal/30 rounded-lg px-4 py-3 text-light-gray placeholder-dark-gray focus:outline-none focus:border-intense-pink transition-colors;
+  }
+
+  .app-input:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  textarea.app-input {
+    @apply resize-none;
+  }
+
+  select.app-input {
+    @apply appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2224%22%20height%3d%2224%22%20viewBox%3d%220%200%2024%2024%22%20fill%3d%22none%22%20stroke%3d%22%236A6A6A%22%20stroke-width%3d%222%22%20stroke-linecap%3d%22round%22%20stroke-linejoin%3d%22round%22%3e%3cpolyline%20points%3d%226%209%2012%2015%2018%209%22%3e%3c%2fpolyline%3e%3c%2fsvg%3e')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1rem] pr-10;
+  }
+
+  /* Buttons */
+  .app-btn-primary {
+    @apply bg-intense-pink text-white px-6 py-2.5 rounded-lg font-medium hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .app-btn-secondary {
+    @apply bg-white/10 text-light-gray px-6 py-2.5 rounded-lg font-medium hover:bg-white/15 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .app-btn-danger {
+    @apply bg-red-500/20 text-red-400 px-6 py-2.5 rounded-lg font-medium hover:bg-red-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Badges */
+  .app-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .app-badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400;
+  }
+
+  .app-badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400;
+  }
+
+  .app-badge-danger {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400;
+  }
+
+  .app-badge-info {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400;
+  }
+
+  /* Tables */
+  .app-table {
+    @apply w-full;
+  }
+
+  .app-table thead {
+    @apply bg-white/5 border-b border-charcoal/30;
+  }
+
+  .app-table th {
+    @apply px-6 py-3 text-left text-xs font-medium text-dark-gray uppercase tracking-wider;
+  }
+
+  .app-table tbody {
+    @apply divide-y divide-charcoal/20;
+  }
+
+  .app-table tbody tr {
+    @apply hover:bg-white/5 transition-colors;
+  }
+
+  .app-table td {
+    @apply px-6 py-4 whitespace-nowrap;
+  }
+
+  /* Label */
+  .app-label {
+    @apply block text-sm font-medium text-gray mb-1;
+  }
+}

@@ -1,0 +1,26 @@
+---
+import "../../styles/global.css";
+import "../../styles/app.css";
+import ForgotPasswordForm from "../../components/react/auth/ForgotPasswordForm";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Recuperar Contrasena - Juega Demonio" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/vietnam/BeVietnamPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <title>Recuperar Contrasena | Juega Demonio</title>
+  </head>
+  <body class="bg-black text-light-gray">
+    <ForgotPasswordForm client:load />
+  </body>
+</html>

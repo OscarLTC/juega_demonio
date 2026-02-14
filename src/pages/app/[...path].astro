@@ -1,0 +1,49 @@
+---
+import "../../styles/global.css";
+import "../../styles/app.css";
+import AppShell from "../../components/react/app/AppShell";
+
+export function getStaticPaths() {
+  return [
+    { params: { path: undefined } },
+    { params: { path: "dashboard" } },
+    { params: { path: "suscripciones" } },
+    { params: { path: "super-chances" } },
+    { params: { path: "ordenes" } },
+    { params: { path: "admin/sorteos" } },
+    { params: { path: "admin/participantes" } },
+    { params: { path: "admin/ordenes" } },
+    { params: { path: "admin/auditoria" } },
+  ];
+}
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Juega Demonio - Panel" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link
+      rel="preload"
+      href="/fonts/vietnam/BeVietnamPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="/fonts/vietnam/BeVietnamPro-Bold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+
+    <title>Juega Demonio - Panel</title>
+  </head>
+  <body class="bg-black text-light-gray min-h-screen">
+    <AppShell client:only="react" />
+  </body>
+</html>
