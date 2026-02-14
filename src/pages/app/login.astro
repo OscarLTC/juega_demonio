@@ -1,0 +1,26 @@
+---
+import "../../styles/global.css";
+import "../../styles/app.css";
+import LoginForm from "../../components/react/auth/LoginForm";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Iniciar Sesion - Juega Demonio" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/vietnam/BeVietnamPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <title>Iniciar Sesion | Juega Demonio</title>
+  </head>
+  <body class="bg-black text-light-gray">
+    <LoginForm client:only="react" />
+  </body>
+</html>

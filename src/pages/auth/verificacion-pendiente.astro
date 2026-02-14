@@ -1,0 +1,26 @@
+---
+import "../../styles/global.css";
+import "../../styles/app.css";
+import VerificationPendingView from "../../components/react/auth/VerificationPendingView";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Verificacion Pendiente - Juega Demonio" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/vietnam/BeVietnamPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
+    <title>Verificacion Pendiente | Juega Demonio</title>
+  </head>
+  <body class="bg-black text-light-gray">
+    <VerificationPendingView client:only="react" />
+  </body>
+</html>
