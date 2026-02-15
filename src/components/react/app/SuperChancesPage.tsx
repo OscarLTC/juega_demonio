@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { superChanceApi, paymentApi, raffleApi } from '../../../services/api'
+import { superChanceApi, raffleApi } from '../../../services/api'
 import Sparkles from 'lucide-react/dist/esm/icons/sparkles'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
 import Clock from 'lucide-react/dist/esm/icons/clock'
@@ -8,7 +8,7 @@ import Plus from 'lucide-react/dist/esm/icons/plus'
 import Minus from 'lucide-react/dist/esm/icons/minus'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
-import Modal from '../shared/Modal'
+import PaymentModal from '../shared/PaymentModal'
 
 export default function SuperChancesContent() {
   const [quantity, setQuantity] = useState(1)
@@ -34,25 +34,19 @@ export default function SuperChancesContent() {
     },
   })
 
-  const simulatePaymentMutation = useMutation({
-    mutationFn: (orderId: string) => paymentApi.simulate(orderId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
-      queryClient.invalidateQueries({ queryKey: ['myOrders'] })
-      setShowPaymentModal(false)
-      setPendingOrder(null)
-      setQuantity(1)
-    },
-  })
-
   const handlePurchase = () => {
     createMutation.mutate({ quantity })
   }
 
-  const handleSimulatePayment = () => {
-    if (pendingOrder?.id) {
-      simulatePaymentMutation.mutate(pendingOrder.id)
-    }
+  const handlePaymentSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
+    queryClient.invalidateQueries({ queryKey: ['myOrders'] })
+    setQuantity(1)
+  }
+
+  const handleClosePayment = () => {
+    setShowPaymentModal(false)
+    setPendingOrder(null)
   }
 
   const incrementQuantity = () => setQuantity((q) => Math.min(q + 1, 10))
@@ -181,66 +175,13 @@ export default function SuperChancesContent() {
         </div>
       </div>
 
-      <Modal
+      <PaymentModal
         isOpen={showPaymentModal}
-        onClose={() => {
-          setShowPaymentModal(false)
-          setPendingOrder(null)
-        }}
-        title="Completar Pago"
-      >
-        {pendingOrder && (
-          <div className="space-y-4">
-            <Alert variant="info">
-              <p className="font-medium">Orden creada exitosamente!</p>
-              <p className="text-sm">
-                Para completar tu compra, realiza el pago o simula el pago para la demo.
-              </p>
-            </Alert>
-
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray">Orden ID:</span>
-                <span className="font-mono text-sm text-light-gray">{pendingOrder.id}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray">Cantidad:</span>
-                <span className="text-light-gray">{pendingOrder.quantity} Super Chance(s)</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray">Total:</span>
-                <span className="font-bold text-lg text-light-gray">
-                  S/ {pendingOrder.totalAmount}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray">Expira:</span>
-                <span className="text-yellow-400 flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {new Date(pendingOrder.expiresAt).toLocaleString('es-PE')}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSimulatePayment}
-              disabled={simulatePaymentMutation.isPending}
-              className="app-btn-primary w-full py-3"
-            >
-              {simulatePaymentMutation.isPending
-                ? 'Procesando pago...'
-                : 'Simular Pago (Demo)'}
-            </button>
-
-            {simulatePaymentMutation.isError && (
-              <Alert variant="error">
-                Error al procesar el pago
-              </Alert>
-            )}
-          </div>
-        )}
-      </Modal>
+        onClose={handleClosePayment}
+        order={pendingOrder}
+        description="Completa el pago para recibir tus tickets adicionales."
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   )
 }
-
