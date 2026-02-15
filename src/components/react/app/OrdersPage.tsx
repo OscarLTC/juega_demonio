@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { orderApi, paymentApi } from '../../../services/api'
+import { orderApi } from '../../../services/api'
 import ShoppingBag from 'lucide-react/dist/esm/icons/shopping-bag'
 import Clock from 'lucide-react/dist/esm/icons/clock'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
@@ -8,6 +9,7 @@ import X from 'lucide-react/dist/esm/icons/x'
 import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
+import PaymentModal from '../shared/PaymentModal'
 
 const ORDER_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
   PENDING: { cls: 'app-badge-warning', label: 'Pendiente' },
@@ -25,6 +27,7 @@ const DEFAULT_TYPE_INFO = { icon: ShoppingBag, label: 'Otro', color: 'gray' }
 
 export default function OrdersContent() {
   const queryClient = useQueryClient()
+  const [payingOrder, setPayingOrder] = useState<any>(null)
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ['myOrders'],
@@ -38,14 +41,11 @@ export default function OrdersContent() {
     },
   })
 
-  const simulatePaymentMutation = useMutation({
-    mutationFn: (orderId: string) => paymentApi.simulate(orderId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myOrders'] })
-      queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
-      queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
-    },
-  })
+  const handlePaymentSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['myOrders'] })
+    queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
+    queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
+  }
 
   const getStatusBadge = (status: string) =>
     ORDER_STATUS_BADGES[status] || { cls: 'app-badge-info', label: status }
@@ -149,11 +149,10 @@ export default function OrdersContent() {
                     {isPending && !isExpired && (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => simulatePaymentMutation.mutate(order.id)}
-                          disabled={simulatePaymentMutation.isPending}
+                          onClick={() => setPayingOrder(order)}
                           className="app-btn-primary text-sm"
                         >
-                          {simulatePaymentMutation.isPending ? '...' : 'Pagar'}
+                          Pagar
                         </button>
                         <button
                           onClick={() => cancelMutation.mutate(order.id)}
@@ -171,7 +170,13 @@ export default function OrdersContent() {
           })}
         </div>
       )}
+
+      <PaymentModal
+        isOpen={!!payingOrder}
+        onClose={() => setPayingOrder(null)}
+        order={payingOrder}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   )
 }
-

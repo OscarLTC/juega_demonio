@@ -124,6 +124,7 @@ export const auditApi = {
 
 export const paymentApi = {
   simulate: (orderId: string, method = 'yape') => api.post(`/webhooks/simulate/${orderId}?paymentMethod=${method}`),
+  charge: (orderId: string, token: string) => api.post('/payments/charge', { orderId, token }),
 }
 
 export const exportApi = {
