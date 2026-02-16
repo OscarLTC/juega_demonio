@@ -1,5 +1,9 @@
 import type { Winner } from "../types/winner";
 
+import keyboardImg from "../assets/img/winnerprizes/winnerprize1.jpg";
+import mouseImg from "../assets/img/winnerprizes/winnerprize2.jpg";
+import controllerImg from "../assets/img/winnerprizes/winnerprize3.jpg";
+
 const generateFridayDates = (): string[] => {
   const fridays: string[] = [];
 
@@ -24,7 +28,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Jorge Quispe Mamani",
     prizeName: "Teclado Mecánico RGB",
     date: fridayDates[0],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "TKL2024001",
   },
   {
@@ -32,7 +36,7 @@ export const mockWinners: Winner[] = [
     winnerName: "María Gonzales Pérez",
     prizeName: "Mouse Gamer Pro",
     date: fridayDates[0],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "MGP2024002",
   },
   {
@@ -40,7 +44,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Carlos Mamani Ticona",
     prizeName: "Auriculares Gaming",
     date: fridayDates[0],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "AUR2024003",
   },
   {
@@ -48,7 +52,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Ana Laura Condori",
     prizeName: "Silla Gamer Ergonómica",
     date: fridayDates[0],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: controllerImg.src,
     code: "SGE2024004",
   },
   {
