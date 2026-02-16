@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { raffleApi, participantApi, exportApi } from '../../../services/api'
 import Users from 'lucide-react/dist/esm/icons/users'
@@ -26,6 +26,13 @@ export default function AdminParticipantsContent() {
     queryFn: () => raffleApi.getAll().then((res) => res.data),
   })
 
+  useEffect(() => {
+    if (raffles?.length && !selectedRaffle) {
+      const active = raffles.find((r: any) => r.status === 'ACTIVE')
+      if (active) setSelectedRaffle(active.id)
+    }
+  }, [raffles])
+
   const selectedRaffleData = useMemo(() => {
     if (!selectedRaffle || !raffles) return null
     return raffles.find((r: any) => r.id === selectedRaffle)
@@ -35,7 +42,7 @@ export default function AdminParticipantsContent() {
 
   const { data: participants, isLoading: participantsLoading } = useQuery({
     queryKey: ['participants', selectedRaffle],
-    queryFn: () => participantApi.getByRaffle(selectedRaffle).then((res) => res.data),
+    queryFn: () => participantApi.getByRaffle(selectedRaffle).then((res) => res.data.content),
     enabled: !!selectedRaffle,
   })
 

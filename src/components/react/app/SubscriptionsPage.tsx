@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { subscriptionApi } from '../../../services/api'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
+import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import Check from 'lucide-react/dist/esm/icons/check'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
 import Zap from 'lucide-react/dist/esm/icons/zap'
@@ -72,6 +73,26 @@ export default function SubscriptionsContent() {
         <h1 className="text-2xl font-bold text-light-gray">Suscripciones</h1>
         <p className="text-dark-gray">Elige un plan para participar en los sorteos</p>
       </div>
+
+      {mySubscriptions?.find((s: any) => s.status === 'ACTIVE') && (
+        <div className="app-card border-green-500/30 bg-green-500/5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-dark-gray">Tu suscripcion activa</p>
+              <p className="text-lg font-bold text-light-gray">
+                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').typeName}
+              </p>
+              <p className="text-sm text-dark-gray">
+                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').remainingRaffles} sorteo(s) restantes
+              </p>
+            </div>
+            <span className="app-badge-success">Activa</span>
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-3 gap-6">
         {plans?.map((plan: any) => (

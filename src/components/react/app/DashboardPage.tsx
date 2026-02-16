@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '../providers/AuthProvider'
-import { raffleApi, participationApi } from '../../../services/api'
+import { raffleApi, participationApi, subscriptionApi } from '../../../services/api'
 import Trophy from 'lucide-react/dist/esm/icons/trophy'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
 import Sparkles from 'lucide-react/dist/esm/icons/sparkles'
 import Clock from 'lucide-react/dist/esm/icons/clock'
 import Calendar from 'lucide-react/dist/esm/icons/calendar'
+import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import { Link } from 'react-router-dom'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
@@ -31,6 +32,13 @@ export default function DashboardContent() {
     queryFn: () => participationApi.getMine().then((res) => res.data),
     enabled: !!raffle,
   })
+
+  const { data: mySubscriptions } = useQuery({
+    queryKey: ['mySubscriptions'],
+    queryFn: () => subscriptionApi.getMine().then((res) => res.data),
+  })
+
+  const activeSub = mySubscriptions?.find((s: any) => s.status === 'ACTIVE')
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return 'N/A'
@@ -159,6 +167,30 @@ export default function DashboardContent() {
               </div>
             </div>
           </div>
+
+          {activeSub ? (
+            <div className="app-card flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-dark-gray">Suscripcion Activa</p>
+                <p className="text-lg font-bold text-light-gray">{activeSub.typeName}</p>
+                <p className="text-sm text-dark-gray">
+                  {activeSub.remainingRaffles} sorteo(s) restantes
+                </p>
+              </div>
+              <span className="app-badge-success">Activa</span>
+            </div>
+          ) : (
+            <Alert variant="info">
+              No tienes una suscripcion activa.{' '}
+              <Link to="/suscripciones" className="text-intense-pink font-medium hover:underline">
+                Suscribete aqui
+              </Link>{' '}
+              para participar en los sorteos.
+            </Alert>
+          )}
 
           <div className="grid md:grid-cols-2 gap-4">
             <Link
