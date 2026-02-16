@@ -5,4 +5,5 @@ export interface Prize {
   name: string;
   date: string;
   link: string;
+  priority?: boolean;
 }

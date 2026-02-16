@@ -12,7 +12,7 @@ import GoogleButton from "../components/ui/GoogleButton.astro";
 import loginHero from "../assets/img/login-hero.jpg";
 ---
 
-<Layout title="Registro | Juega Demonio">
+<Layout title="Registro | Juega Demonio" showSocialLinks={false}>
   <AuthLayout
     heroImage={loginHero}
     heroAlt="Registro Juega Demonio"
@@ -85,9 +85,15 @@ import loginHero from "../assets/img/login-hero.jpg";
 <script>
   function initRegistroForm() {
     const form = document.getElementById("registro-form") as HTMLFormElement;
-    const passwordInput = document.getElementById("password") as HTMLInputElement;
-    const confirmPasswordInput = document.getElementById("confirm-password") as HTMLInputElement;
-    const passwordError = document.querySelector('[data-password-error="confirm-password"]');
+    const passwordInput = document.getElementById(
+      "password",
+    ) as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById(
+      "confirm-password",
+    ) as HTMLInputElement;
+    const passwordError = document.querySelector(
+      '[data-password-error="confirm-password"]',
+    );
 
     form?.addEventListener("submit", (e) => {
       const password = passwordInput?.value;
@@ -106,7 +112,10 @@ import loginHero from "../assets/img/login-hero.jpg";
     });
 
     confirmPasswordInput?.addEventListener("input", () => {
-      if (confirmPasswordInput.value && passwordInput?.value !== confirmPasswordInput.value) {
+      if (
+        confirmPasswordInput.value &&
+        passwordInput?.value !== confirmPasswordInput.value
+      ) {
         passwordError?.classList.remove("hidden");
       } else {
         passwordError?.classList.add("hidden");
