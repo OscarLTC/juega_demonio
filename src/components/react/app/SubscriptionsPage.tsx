@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { subscriptionApi, paymentApi } from '../../../services/api'
+import { subscriptionApi } from '../../../services/api'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
+import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import Check from 'lucide-react/dist/esm/icons/check'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
-import Clock from 'lucide-react/dist/esm/icons/clock'
 import Zap from 'lucide-react/dist/esm/icons/zap'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
-import Modal from '../shared/Modal'
+import PaymentModal from '../shared/PaymentModal'
 
 const SUB_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
   PENDING: { cls: 'app-badge-warning', label: 'Pendiente' },
@@ -41,25 +41,19 @@ export default function SubscriptionsContent() {
     },
   })
 
-  const simulatePaymentMutation = useMutation({
-    mutationFn: (orderId: string) => paymentApi.simulate(orderId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
-      queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
-      setShowPaymentModal(false)
-      setPendingOrder(null)
-    },
-  })
-
   const handleSelectPlan = (plan: any) => {
     setSelectedPlan(plan)
     createMutation.mutate({ type: plan.type })
   }
 
-  const handleSimulatePayment = () => {
-    if (pendingOrder?.id) {
-      simulatePaymentMutation.mutate(pendingOrder.id)
-    }
+  const handlePaymentSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
+    queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
+  }
+
+  const handleClosePayment = () => {
+    setShowPaymentModal(false)
+    setPendingOrder(null)
   }
 
   const getStatusBadge = (status: string) =>
@@ -79,6 +73,26 @@ export default function SubscriptionsContent() {
         <h1 className="text-2xl font-bold text-light-gray">Suscripciones</h1>
         <p className="text-dark-gray">Elige un plan para participar en los sorteos</p>
       </div>
+
+      {mySubscriptions?.find((s: any) => s.status === 'ACTIVE') && (
+        <div className="app-card border-green-500/30 bg-green-500/5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-400" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-dark-gray">Tu suscripcion activa</p>
+              <p className="text-lg font-bold text-light-gray">
+                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').typeName}
+              </p>
+              <p className="text-sm text-dark-gray">
+                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').remainingRaffles} sorteo(s) restantes
+              </p>
+            </div>
+            <span className="app-badge-success">Activa</span>
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-3 gap-6">
         {plans?.map((plan: any) => (
@@ -174,62 +188,13 @@ export default function SubscriptionsContent() {
         )}
       </div>
 
-      <Modal
+      <PaymentModal
         isOpen={showPaymentModal}
-        onClose={() => {
-          setShowPaymentModal(false)
-          setPendingOrder(null)
-        }}
-        title="Completar Pago"
-      >
-        {pendingOrder && (
-          <div className="space-y-4">
-            <Alert variant="info">
-              <p className="font-medium">Orden creada exitosamente!</p>
-              <p className="text-sm">
-                Para completar tu suscripcion, realiza el pago usando Yape o simula el pago para la demo.
-              </p>
-            </Alert>
-
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray">Orden ID:</span>
-                <span className="font-mono text-sm text-light-gray">{pendingOrder.id}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray">Total:</span>
-                <span className="font-bold text-lg text-light-gray">
-                  S/ {pendingOrder.totalAmount}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray">Expira:</span>
-                <span className="text-yellow-400 flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {new Date(pendingOrder.expiresAt).toLocaleString('es-PE')}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSimulatePayment}
-              disabled={simulatePaymentMutation.isPending}
-              className="app-btn-primary w-full py-3"
-            >
-              {simulatePaymentMutation.isPending
-                ? 'Procesando pago...'
-                : 'Simular Pago (Demo)'}
-            </button>
-
-            {simulatePaymentMutation.isError && (
-              <Alert variant="error">
-                Error al procesar el pago
-              </Alert>
-            )}
-          </div>
-        )}
-      </Modal>
+        onClose={handleClosePayment}
+        order={pendingOrder}
+        description="Completa el pago de tu suscripcion para activarla inmediatamente."
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   )
 }
-

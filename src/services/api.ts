@@ -100,6 +100,7 @@ export const orderApi = {
   cancel: (id: string) => api.post(`/orders/${id}/cancel`),
   getAll: () => api.get('/admin/orders'),
   getByStatus: (status: string) => api.get(`/admin/orders/status/${status}`),
+  getPendingSummary: (raffleId: string) => api.get(`/admin/orders/raffle/${raffleId}/pending/summary`),
 }
 
 export const participationApi = {
@@ -124,6 +125,7 @@ export const auditApi = {
 
 export const paymentApi = {
   simulate: (orderId: string, method = 'yape') => api.post(`/webhooks/simulate/${orderId}?paymentMethod=${method}`),
+  charge: (orderId: string, token: string) => api.post('/payments/charge', { orderId, token }),
 }
 
 export const exportApi = {
