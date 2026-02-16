@@ -60,7 +60,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Luis Fernando Apaza",
     prizeName: "Monitor 27 pulgadas",
     date: fridayDates[0],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "MON2024005",
   },
 
@@ -69,7 +69,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Patricia Flores Rojas",
     prizeName: "Webcam Full HD",
     date: fridayDates[1],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: keyboardImg.src,
     code: "WEB2024006",
   },
   {
@@ -77,7 +77,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Roberto Choque Silva",
     prizeName: "Micrófono Profesional",
     date: fridayDates[1],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "MIC2024007",
   },
   {
@@ -85,7 +85,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Carmen Huanca Vargas",
     prizeName: "Teclado Inalámbrico",
     date: fridayDates[1],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: keyboardImg.src,
     code: "TKI2024008",
   },
   {
@@ -93,7 +93,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Diego Paredes Morales",
     prizeName: "Mouse Pad XXL RGB",
     date: fridayDates[1],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: mouseImg.src,
     code: "MPD2024009",
   },
   {
@@ -101,7 +101,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Sofía Ramírez Cruz",
     prizeName: "Controlador Pro",
     date: fridayDates[1],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: controllerImg.src,
     code: "CTR2024010",
   },
 
@@ -110,7 +110,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Fernando Castro Nina",
     prizeName: "Tarjeta Gráfica RTX",
     date: fridayDates[2],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "GPU2024011",
   },
   {
@@ -118,7 +118,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Valentina Ortiz Limachi",
     prizeName: "Procesador Gaming",
     date: fridayDates[2],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "CPU2024012",
   },
   {
@@ -126,7 +126,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Andrés Quisbert Poma",
     prizeName: "Memoria RAM 32GB",
     date: fridayDates[2],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "RAM2024013",
   },
   {
@@ -134,7 +134,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Gabriela Torrico Vega",
     prizeName: "SSD 1TB NVMe",
     date: fridayDates[2],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "SSD2024014",
   },
   {
@@ -142,7 +142,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Miguel Ángel Calle",
     prizeName: "Fuente Modular 850W",
     date: fridayDates[2],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "PSU2024015",
   },
 
@@ -151,7 +151,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Isabella Mendoza Ramos",
     prizeName: "Case RGB Premium",
     date: fridayDates[3],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "CSE2024016",
   },
   {
@@ -159,7 +159,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Javier Pinto Gutiérrez",
     prizeName: "Cooler Líquido RGB",
     date: fridayDates[3],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "CLR2024017",
   },
   {
@@ -167,7 +167,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Daniela Arias Colque",
     prizeName: "Placa Madre Gaming",
     date: fridayDates[3],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "MBD2024018",
   },
   {
@@ -175,7 +175,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Sebastián Rocha Inca",
     prizeName: "Kit Ventiladores RGB",
     date: fridayDates[3],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "FAN2024019",
   },
   {
@@ -183,7 +183,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Camila Sánchez Yujra",
     prizeName: "Capturadora 4K",
     date: fridayDates[3],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "CAP2024020",
   },
 
@@ -192,7 +192,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Nicolás Vargas Chura",
     prizeName: "Luces LED Gaming",
     date: fridayDates[4],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "LED2024021",
   },
   {
@@ -200,7 +200,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Valeria Medina Alanoca",
     prizeName: "Soporte Monitor Dual",
     date: fridayDates[4],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "SMD2024022",
   },
   {
@@ -208,7 +208,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Mateo Fernández Callisaya",
     prizeName: "Hub USB Gaming",
     date: fridayDates[4],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "HUB2024023",
   },
   {
@@ -216,7 +216,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Lucía Herrera Condori",
     prizeName: "Cable HDMI 2.1",
     date: fridayDates[4],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "HDM2024024",
   },
   {
@@ -224,7 +224,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Emilio Torres Mamani",
     prizeName: "Adaptador Wi-Fi 6",
     date: fridayDates[4],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "WIF2024025",
   },
 
@@ -233,7 +233,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Martina López Quispe",
     prizeName: "Auriculares Inalámbricos",
     date: fridayDates[5],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "AUI2024026",
   },
   {
@@ -241,7 +241,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Benjamín Ruiz Huanca",
     prizeName: "Teclado Compacto 60%",
     date: fridayDates[5],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "TK62024027",
   },
   {
@@ -249,7 +249,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Emma Castillo Apaza",
     prizeName: "Mouse Vertical Ergonómico",
     date: fridayDates[5],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "MVE2024028",
   },
   {
@@ -257,7 +257,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Lucas Morales Choque",
     prizeName: "Cámara Web 4K",
     date: fridayDates[5],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "CAM2024029",
   },
   {
@@ -265,7 +265,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Mía Navarro Flores",
     prizeName: "Micrófono USB Condensador",
     date: fridayDates[5],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "MUS2024030",
   },
 
@@ -274,7 +274,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Santiago Delgado Ticona",
     prizeName: "Silla Gaming Pro",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "SGP2024031",
   },
   {
@@ -282,7 +282,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Olivia Guzmán Limachi",
     prizeName: "Monitor Curvo 32 pulgadas",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "MC32024032",
   },
   {
@@ -290,7 +290,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Tomás Jiménez Poma",
     prizeName: "Escritorio Gaming RGB",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "ESC2024033",
   },
   {
@@ -298,7 +298,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Renata Salazar Vega",
     prizeName: "Reposapiés Ergonómico",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "REP2024034",
   },
   {
@@ -306,7 +306,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Maximiliano Cruz Calle",
     prizeName: "Lámpara LED Escritorio",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "LAM2024035",
   },
   {
@@ -314,7 +314,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Victoria Romero Ramos",
     prizeName: "Organizador Cables RGB",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "ORG2024036",
   },
   {
@@ -322,7 +322,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Joaquín Peña Gutiérrez",
     prizeName: "Alfombrilla Escritorio XXL",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "ALF2024037",
   },
   {
@@ -330,7 +330,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Amanda Silva Colque",
     prizeName: "Soporte Laptop Ajustable",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize2.jpg",
+    image: mouseImg.src,
     code: "SLA2024038",
   },
   {
@@ -338,7 +338,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Felipe Cortez Inca",
     prizeName: "Cargador Inalámbrico RGB",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize3.jpg",
+    image: controllerImg.src,
     code: "CIR2024039",
   },
   {
@@ -346,7 +346,7 @@ export const mockWinners: Winner[] = [
     winnerName: "Elena Vásquez Yujra",
     prizeName: "Parlantes 2.1 Gaming",
     date: fridayDates[6],
-    image: "/src/assets/img/winnerprizes/winnerprize1.jpg",
+    image: keyboardImg.src,
     code: "PAR2024040",
   },
 ];
