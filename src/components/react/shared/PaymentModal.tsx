@@ -16,7 +16,7 @@ declare global {
 }
 
 const CULQI_PUBLIC_KEY = import.meta.env.PUBLIC_CULQI_PUBLIC_KEY || 'pk_test_xxx'
-const CULQI_SCRIPT_URL = 'https://checkout.culqi.com/js/v4'
+const CULQI_SCRIPT_URL = 'https://checkout.culqi.com/js/v3'
 
 interface PaymentModalProps {
   isOpen: boolean

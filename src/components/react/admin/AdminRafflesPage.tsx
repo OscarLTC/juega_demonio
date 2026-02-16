@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { raffleApi } from '../../../services/api'
+import { raffleApi, orderApi } from '../../../services/api'
 import Trophy from 'lucide-react/dist/esm/icons/trophy'
 import Plus from 'lucide-react/dist/esm/icons/plus'
 import Play from 'lucide-react/dist/esm/icons/play'
@@ -8,6 +8,7 @@ import Square from 'lucide-react/dist/esm/icons/square'
 import Flag from 'lucide-react/dist/esm/icons/flag'
 import Trash2 from 'lucide-react/dist/esm/icons/trash-2'
 import Calendar from 'lucide-react/dist/esm/icons/calendar'
+import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
 import Modal from '../shared/Modal'
@@ -35,6 +36,15 @@ export default function AdminRafflesContent() {
   const { data: raffles, isLoading } = useQuery({
     queryKey: ['adminRaffles'],
     queryFn: () => raffleApi.getAll().then((res) => res.data),
+  })
+
+  const closingRaffle = raffles?.find((r: any) => r.status === 'CLOSING')
+
+  const { data: pendingSummary } = useQuery({
+    queryKey: ['pendingSummary', closingRaffle?.id],
+    queryFn: () => orderApi.getPendingSummary(closingRaffle.id).then((res) => res.data),
+    enabled: !!closingRaffle,
+    refetchInterval: 10000,
   })
 
   const createMutation = useMutation({
@@ -130,7 +140,7 @@ export default function AdminRafflesContent() {
         </Alert>
       ) : (
         <div className="space-y-4">
-          {raffles?.map((raffle: any) => (
+          {[...raffles]?.reverse().map((raffle: any) => (
             <div key={raffle.id} className="app-card">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
@@ -185,13 +195,30 @@ export default function AdminRafflesContent() {
                     </button>
                   )}
                   {raffle.status === 'CLOSING' && (
-                    <button
-                      onClick={() => finalizeMutation.mutate(raffle.id)}
-                      disabled={finalizeMutation.isPending}
-                      className="app-btn-danger flex items-center gap-1 text-sm"
-                    >
-                      <Flag className="w-4 h-4" /> Finalizar
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {pendingSummary?.count > 0 ? (
+                        <div className="text-right">
+                          <span className="flex items-center gap-1 text-sm text-yellow-400">
+                            <AlertCircle className="w-4 h-4" />
+                            {pendingSummary.count} orden(es) pendiente(s)
+                          </span>
+                          {pendingSummary.latestExpiration && (
+                            <p className="text-xs text-dark-gray">
+                              Expiran antes de {new Date(pendingSummary.latestExpiration).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-green-400">Sin ordenes pendientes</span>
+                      )}
+                      <button
+                        onClick={() => finalizeMutation.mutate(raffle.id)}
+                        disabled={finalizeMutation.isPending}
+                        className="app-btn-danger flex items-center gap-1 text-sm"
+                      >
+                        <Flag className="w-4 h-4" /> Finalizar
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
