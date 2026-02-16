@@ -140,7 +140,7 @@ export default function AdminRafflesContent() {
         </Alert>
       ) : (
         <div className="space-y-4">
-          {[...raffles]?.reverse().map((raffle: any) => (
+          {[...raffles]?.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((raffle: any) => (
             <div key={raffle.id} className="app-card">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
