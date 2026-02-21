@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { raffleApi, orderApi } from '../../../services/api'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { raffleApi, orderApi, participantApi } from '../../../services/api'
 import Trophy from 'lucide-react/dist/esm/icons/trophy'
 import Plus from 'lucide-react/dist/esm/icons/plus'
 import Play from 'lucide-react/dist/esm/icons/play'
@@ -9,6 +11,9 @@ import Flag from 'lucide-react/dist/esm/icons/flag'
 import Trash2 from 'lucide-react/dist/esm/icons/trash-2'
 import Calendar from 'lucide-react/dist/esm/icons/calendar'
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle'
+import Crown from 'lucide-react/dist/esm/icons/crown'
+import Search from 'lucide-react/dist/esm/icons/search'
+import Check from 'lucide-react/dist/esm/icons/check'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
 import Modal from '../shared/Modal'
@@ -22,12 +27,17 @@ const RAFFLE_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
 
 export default function AdminRafflesContent() {
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showWinnerModal, setShowWinnerModal] = useState(false)
+  const [finalizeRaffleId, setFinalizeRaffleId] = useState<string | null>(null)
+  const [selectedParticipant, setSelectedParticipant] = useState<any>(null)
+  const [participantSearch, setParticipantSearch] = useState('')
+  const [winnerError, setWinnerError] = useState('')
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     prize: '',
-    startsAt: '',
-    endsAt: '',
+    startsAt: null as Date | null,
+    endsAt: null as Date | null,
     ticketsPerSubscription: 1,
     ticketsPerSuperChance: 3,
   })
@@ -46,6 +56,23 @@ export default function AdminRafflesContent() {
     enabled: !!closingRaffle,
     refetchInterval: 10000,
   })
+
+  const { data: participants, isLoading: isLoadingParticipants } = useQuery({
+    queryKey: ['winnerParticipants', finalizeRaffleId],
+    queryFn: () => participantApi.getByRaffle(finalizeRaffleId!, 0, 1000).then((res) => res.data?.content ?? res.data),
+    enabled: !!finalizeRaffleId && showWinnerModal,
+  })
+
+  const filteredParticipants = useMemo(() => {
+    if (!participants) return []
+    if (!participantSearch.trim()) return participants
+    const q = participantSearch.toLowerCase()
+    return participants.filter(
+      (p: any) =>
+        p.displayName?.toLowerCase().includes(q) ||
+        p.participantCode?.toLowerCase().includes(q)
+    )
+  }, [participants, participantSearch])
 
   const createMutation = useMutation({
     mutationFn: (data: any) => raffleApi.create(data),
@@ -67,8 +94,19 @@ export default function AdminRafflesContent() {
   })
 
   const finalizeMutation = useMutation({
-    mutationFn: (id: string) => raffleApi.finalize(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminRaffles'] }),
+    mutationFn: ({ id, participantCode }: { id: string; participantCode: string }) =>
+      raffleApi.finalize(id, participantCode),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRaffles'] })
+      setShowWinnerModal(false)
+      setFinalizeRaffleId(null)
+      setSelectedParticipant(null)
+      setParticipantSearch('')
+      setWinnerError('')
+    },
+    onError: (error: any) => {
+      setWinnerError(error?.response?.data?.message || 'Error al finalizar el sorteo')
+    },
   })
 
   const deleteMutation = useMutation({
@@ -81,8 +119,8 @@ export default function AdminRafflesContent() {
       name: '',
       description: '',
       prize: '',
-      startsAt: '',
-      endsAt: '',
+      startsAt: null,
+      endsAt: null,
       ticketsPerSubscription: 1,
       ticketsPerSuperChance: 3,
     })
@@ -97,6 +135,8 @@ export default function AdminRafflesContent() {
     e.preventDefault()
     createMutation.mutate({
       ...formData,
+      startsAt: formData.startsAt?.toISOString() || null,
+      endsAt: formData.endsAt?.toISOString() || null,
       ticketsPerSubscription: parseInt(String(formData.ticketsPerSubscription)),
       ticketsPerSuperChance: parseInt(String(formData.ticketsPerSuperChance)),
     })
@@ -212,12 +252,27 @@ export default function AdminRafflesContent() {
                         <span className="text-sm text-green-400">Sin ordenes pendientes</span>
                       )}
                       <button
-                        onClick={() => finalizeMutation.mutate(raffle.id)}
-                        disabled={finalizeMutation.isPending}
+                        onClick={() => {
+                          setFinalizeRaffleId(raffle.id)
+                          setSelectedParticipant(null)
+                          setParticipantSearch('')
+                          setWinnerError('')
+                          setShowWinnerModal(true)
+                        }}
                         className="app-btn-danger flex items-center gap-1 text-sm"
                       >
                         <Flag className="w-4 h-4" /> Finalizar
                       </button>
+                    </div>
+                  )}
+                  {raffle.status === 'CLOSED' && raffle.winnerParticipantCode && (
+                    <div className="flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-3 py-2">
+                      <Crown className="w-5 h-5 text-yellow-400" />
+                      <div>
+                        <p className="text-sm font-semibold text-yellow-400">Ganador</p>
+                        <p className="text-sm text-light-gray">{raffle.winnerDisplayName}</p>
+                        <p className="text-xs text-dark-gray">{raffle.winnerParticipantCode}</p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -278,22 +333,30 @@ export default function AdminRafflesContent() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="app-label">Fecha de Inicio</label>
-              <input
-                type="datetime-local"
-                name="startsAt"
-                value={formData.startsAt}
-                onChange={handleChange}
+              <DatePicker
+                selected={formData.startsAt}
+                onChange={(date) => setFormData((prev) => ({ ...prev, startsAt: date }))}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="dd/MM/yyyy HH:mm"
+                placeholderText="Seleccionar fecha"
                 className="app-input"
+                minDate={new Date()}
               />
             </div>
             <div>
               <label className="app-label">Fecha de Fin</label>
-              <input
-                type="datetime-local"
-                name="endsAt"
-                value={formData.endsAt}
-                onChange={handleChange}
+              <DatePicker
+                selected={formData.endsAt}
+                onChange={(date) => setFormData((prev) => ({ ...prev, endsAt: date }))}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="dd/MM/yyyy HH:mm"
+                placeholderText="Seleccionar fecha"
                 className="app-input"
+                minDate={formData.startsAt || new Date()}
               />
             </div>
           </div>
@@ -351,6 +414,122 @@ export default function AdminRafflesContent() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={showWinnerModal}
+        onClose={() => {
+          setShowWinnerModal(false)
+          setFinalizeRaffleId(null)
+          setSelectedParticipant(null)
+          setParticipantSearch('')
+          setWinnerError('')
+        }}
+        title="Finalizar Sorteo - Seleccionar Ganador"
+      >
+        <div className="space-y-4">
+          <p className="text-gray text-sm">
+            Busca y selecciona al participante ganador para cerrar el sorteo definitivamente.
+          </p>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-gray" />
+            <input
+              type="text"
+              value={participantSearch}
+              onChange={(e) => setParticipantSearch(e.target.value)}
+              className="app-input pl-10"
+              placeholder="Buscar por nombre o codigo..."
+              autoFocus
+            />
+          </div>
+
+          {selectedParticipant && (
+            <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/30 rounded-lg px-3 py-2">
+              <Check className="w-5 h-5 text-green-400 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-light-gray truncate">{selectedParticipant.displayName}</p>
+                <p className="text-xs text-dark-gray">{selectedParticipant.participantCode} - {selectedParticipant.totalTickets} ticket(s)</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedParticipant(null)}
+                className="text-xs text-dark-gray hover:text-light-gray"
+              >
+                Cambiar
+              </button>
+            </div>
+          )}
+
+          {!selectedParticipant && (
+            <div className="max-h-60 overflow-y-auto border border-charcoal/30 rounded-lg">
+              {isLoadingParticipants ? (
+                <div className="flex items-center justify-center py-8">
+                  <LoadingSpinner size="sm" />
+                </div>
+              ) : filteredParticipants.length === 0 ? (
+                <p className="text-sm text-dark-gray text-center py-6">
+                  {participantSearch ? 'Sin resultados' : 'No hay participantes'}
+                </p>
+              ) : (
+                filteredParticipants.map((p: any) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedParticipant(p)
+                      setWinnerError('')
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 hover:bg-white/5 transition-colors text-left border-b border-charcoal/20 last:border-b-0"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-intense-pink/20 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-bold text-intense-pink">
+                        {p.displayName?.charAt(0)?.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-light-gray truncate">{p.displayName}</p>
+                      <p className="text-xs text-dark-gray">{p.participantCode}</p>
+                    </div>
+                    <span className="text-xs text-dark-gray shrink-0">{p.totalTickets} ticket(s)</span>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+
+          {winnerError && (
+            <Alert variant="error">{winnerError}</Alert>
+          )}
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setShowWinnerModal(false)
+                setFinalizeRaffleId(null)
+                setSelectedParticipant(null)
+                setParticipantSearch('')
+                setWinnerError('')
+              }}
+              className="app-btn-secondary flex-1"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (finalizeRaffleId && selectedParticipant) {
+                  finalizeMutation.mutate({ id: finalizeRaffleId, participantCode: selectedParticipant.participantCode })
+                }
+              }}
+              disabled={finalizeMutation.isPending || !selectedParticipant}
+              className="app-btn-danger flex-1"
+            >
+              {finalizeMutation.isPending ? 'Finalizando...' : 'Finalizar Sorteo'}
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   )

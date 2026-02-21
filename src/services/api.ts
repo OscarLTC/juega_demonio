@@ -73,12 +73,13 @@ export const raffleApi = {
   getActive: () => api.get('/raffles/active'),
   getById: (id: string) => api.get(`/raffles/${id}`),
   getHistory: () => api.get('/raffles/history'),
+  getWinners: () => api.get('/raffles/winners'),
   getAll: () => api.get('/admin/raffles'),
   create: (data: Record<string, unknown>) => api.post('/admin/raffles', data),
   update: (id: string, data: Record<string, unknown>) => api.put(`/admin/raffles/${id}`, data),
   activate: (id: string) => api.post(`/admin/raffles/${id}/activate`),
   startClosing: (id: string) => api.post(`/admin/raffles/${id}/close`),
-  finalize: (id: string) => api.post(`/admin/raffles/${id}/finalize`),
+  finalize: (id: string, participantCode: string) => api.post(`/admin/raffles/${id}/finalize`, { participantCode }),
   delete: (id: string) => api.delete(`/admin/raffles/${id}`),
 }
 
@@ -86,6 +87,8 @@ export const subscriptionApi = {
   getPlans: () => api.get('/subscriptions/plans'),
   getMine: () => api.get('/subscriptions/me'),
   create: (data: Record<string, unknown>) => api.post('/subscriptions', data),
+  createRecurring: (data: { type: string; savedCardId: string }) => api.post('/subscriptions/recurring', data),
+  cancelRecurring: (id: string) => api.delete(`/subscriptions/${id}/cancel`),
   getAll: () => api.get('/admin/subscriptions'),
 }
 
@@ -108,7 +111,7 @@ export const participationApi = {
 }
 
 export const participantApi = {
-  getByRaffle: (raffleId: string) => api.get(`/admin/participants/raffle/${raffleId}`),
+  getByRaffle: (raffleId: string, page = 0, size = 20) => api.get(`/admin/participants/raffle/${raffleId}?page=${page}&size=${size}`),
   countByRaffle: (raffleId: string) => api.get(`/admin/participants/raffle/${raffleId}/count`),
   getTotalTickets: (raffleId: string) => api.get(`/admin/participants/raffle/${raffleId}/tickets`),
 }
@@ -126,6 +129,12 @@ export const auditApi = {
 export const paymentApi = {
   simulate: (orderId: string, method = 'yape') => api.post(`/webhooks/simulate/${orderId}?paymentMethod=${method}`),
   charge: (orderId: string, token: string) => api.post('/payments/charge', { orderId, token }),
+}
+
+export const cardApi = {
+  getMyCards: () => api.get('/cards'),
+  saveCard: (token: string) => api.post('/cards', { token }),
+  deleteCard: (id: string) => api.delete(`/cards/${id}`),
 }
 
 export const exportApi = {

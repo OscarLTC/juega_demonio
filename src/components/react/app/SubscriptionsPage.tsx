@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { subscriptionApi } from '../../../services/api'
+import { subscriptionApi, cardApi } from '../../../services/api'
+import { Link } from 'react-router-dom'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
 import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import Check from 'lucide-react/dist/esm/icons/check'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
 import Zap from 'lucide-react/dist/esm/icons/zap'
+import RefreshCw from 'lucide-react/dist/esm/icons/refresh-cw'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
 import PaymentModal from '../shared/PaymentModal'
@@ -21,6 +23,8 @@ export default function SubscriptionsContent() {
   const [selectedPlan, setSelectedPlan] = useState<any>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [pendingOrder, setPendingOrder] = useState<any>(null)
+  const [paymentMode, setPaymentMode] = useState<'one-time' | 'recurring'>('one-time')
+  const [selectedCardId, setSelectedCardId] = useState<string>('')
   const queryClient = useQueryClient()
 
   const { data: plans, isLoading: plansLoading } = useQuery({
@@ -33,6 +37,11 @@ export default function SubscriptionsContent() {
     queryFn: () => subscriptionApi.getMine().then((res) => res.data),
   })
 
+  const { data: myCards } = useQuery({
+    queryKey: ['myCards'],
+    queryFn: () => cardApi.getMyCards().then((res) => res.data),
+  })
+
   const createMutation = useMutation({
     mutationFn: (data: any) => subscriptionApi.create(data),
     onSuccess: (response) => {
@@ -41,9 +50,33 @@ export default function SubscriptionsContent() {
     },
   })
 
+  const recurringMutation = useMutation({
+    mutationFn: (data: { type: string; savedCardId: string }) =>
+      subscriptionApi.createRecurring(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
+      queryClient.invalidateQueries({ queryKey: ['myParticipation'] })
+      setSelectedPlan(null)
+      setPaymentMode('one-time')
+      setSelectedCardId('')
+    },
+  })
+
+  const cancelMutation = useMutation({
+    mutationFn: (id: string) => subscriptionApi.cancelRecurring(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mySubscriptions'] })
+    },
+  })
+
   const handleSelectPlan = (plan: any) => {
     setSelectedPlan(plan)
-    createMutation.mutate({ type: plan.type })
+
+    if (paymentMode === 'recurring' && selectedCardId) {
+      recurringMutation.mutate({ type: plan.type, savedCardId: selectedCardId })
+    } else {
+      createMutation.mutate({ type: plan.type })
+    }
   }
 
   const handlePaymentSuccess = () => {
@@ -58,6 +91,9 @@ export default function SubscriptionsContent() {
 
   const getStatusBadge = (status: string) =>
     SUB_STATUS_BADGES[status] || { cls: 'app-badge-info', label: status }
+
+  const hasCards = myCards && myCards.length > 0
+  const isPending = createMutation.isPending || recurringMutation.isPending
 
   if (plansLoading) {
     return (
@@ -87,12 +123,96 @@ export default function SubscriptionsContent() {
               </p>
               <p className="text-sm text-dark-gray">
                 {mySubscriptions.find((s: any) => s.status === 'ACTIVE').remainingRaffles} sorteo(s) restantes
+                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').recurring && (
+                  <span className="ml-2 text-intense-pink">
+                    <RefreshCw className="w-3 h-3 inline mr-1" />
+                    Recurrente
+                  </span>
+                )}
               </p>
             </div>
-            <span className="app-badge-success">Activa</span>
+            <div className="flex items-center gap-2">
+              <span className="app-badge-success">Activa</span>
+              {mySubscriptions.find((s: any) => s.status === 'ACTIVE').recurring && (
+                <button
+                  onClick={() =>
+                    cancelMutation.mutate(
+                      mySubscriptions.find((s: any) => s.status === 'ACTIVE').id
+                    )
+                  }
+                  disabled={cancelMutation.isPending}
+                  className="text-xs text-red-400 hover:text-red-300 underline"
+                >
+                  {cancelMutation.isPending ? 'Cancelando...' : 'Cancelar recurrencia'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+      {/* Payment Mode Selector */}
+      <div className="app-card">
+        <h3 className="text-sm font-semibold text-light-gray mb-3">Metodo de pago</h3>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setPaymentMode('one-time')}
+            className={`flex-1 p-3 rounded-lg border transition-all text-sm ${
+              paymentMode === 'one-time'
+                ? 'border-intense-pink bg-intense-pink/10 text-intense-pink'
+                : 'border-charcoal/30 text-gray hover:border-charcoal/50'
+            }`}
+          >
+            <CreditCard className="w-5 h-5 mx-auto mb-1" />
+            Pago unico
+          </button>
+          <button
+            onClick={() => {
+              if (hasCards) {
+                setPaymentMode('recurring')
+                setSelectedCardId(myCards[0].id)
+              }
+            }}
+            disabled={!hasCards}
+            className={`flex-1 p-3 rounded-lg border transition-all text-sm ${
+              paymentMode === 'recurring'
+                ? 'border-intense-pink bg-intense-pink/10 text-intense-pink'
+                : hasCards
+                  ? 'border-charcoal/30 text-gray hover:border-charcoal/50'
+                  : 'border-charcoal/20 text-dark-gray cursor-not-allowed'
+            }`}
+          >
+            <RefreshCw className="w-5 h-5 mx-auto mb-1" />
+            Pago recurrente
+          </button>
+        </div>
+
+        {paymentMode === 'recurring' && hasCards && (
+          <div className="mt-3">
+            <label className="app-label">Seleccionar tarjeta</label>
+            <select
+              value={selectedCardId}
+              onChange={(e) => setSelectedCardId(e.target.value)}
+              className="app-input w-full"
+            >
+              {myCards.map((card: any) => (
+                <option key={card.id} value={card.id}>
+                  {card.brand} ****{card.lastFour}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {!hasCards && paymentMode === 'one-time' && (
+          <p className="text-xs text-dark-gray mt-2">
+            ¿Quieres pago recurrente?{' '}
+            <Link to="/perfil" className="text-intense-pink hover:underline">
+              Guarda una tarjeta primero
+            </Link>
+          </p>
+        )}
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {plans?.map((plan: any) => (
@@ -131,28 +251,44 @@ export default function SubscriptionsContent() {
                 <Zap className="w-5 h-5 text-green-400" />
                 <span>Acceso inmediato</span>
               </li>
+              {paymentMode === 'recurring' && (
+                <li className="flex items-center gap-2 text-intense-pink">
+                  <RefreshCw className="w-5 h-5" />
+                  <span>Renovacion automatica</span>
+                </li>
+              )}
             </ul>
 
             <button
               onClick={() => handleSelectPlan(plan)}
-              disabled={createMutation.isPending}
+              disabled={isPending || (paymentMode === 'recurring' && !selectedCardId)}
               className={`w-full py-3 rounded-lg font-medium transition-colors ${
                 plan.type === 'MONTHLY'
                   ? 'app-btn-primary'
                   : 'app-btn-secondary'
               }`}
             >
-              {createMutation.isPending && selectedPlan?.type === plan.type
+              {isPending && selectedPlan?.type === plan.type
                 ? 'Procesando...'
-                : 'Seleccionar Plan'}
+                : paymentMode === 'recurring'
+                  ? 'Suscribirme'
+                  : 'Seleccionar Plan'}
             </button>
           </div>
         ))}
       </div>
 
-      {createMutation.isError && (
+      {(createMutation.isError || recurringMutation.isError) && (
         <Alert variant="error">
-          {(createMutation.error as any)?.response?.data?.message || 'Error al crear la suscripcion'}
+          {(createMutation.error as any)?.response?.data?.message ||
+            (recurringMutation.error as any)?.response?.data?.message ||
+            'Error al crear la suscripcion'}
+        </Alert>
+      )}
+
+      {recurringMutation.isSuccess && (
+        <Alert variant="success">
+          Suscripcion recurrente creada exitosamente. Se renovara automaticamente cada periodo.
         </Alert>
       )}
 
@@ -173,7 +309,12 @@ export default function SubscriptionsContent() {
                     <CreditCard className="w-6 h-6 text-intense-pink" />
                   </div>
                   <div>
-                    <p className="font-semibold text-light-gray">{sub.typeName}</p>
+                    <p className="font-semibold text-light-gray">
+                      {sub.typeName}
+                      {sub.recurring && (
+                        <RefreshCw className="w-3 h-3 inline ml-2 text-intense-pink" />
+                      )}
+                    </p>
                     <p className="text-sm text-dark-gray">
                       {sub.remainingRaffles} sorteo(s) restantes
                     </p>
