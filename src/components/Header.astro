@@ -21,7 +21,7 @@ const getLinkClass = (path: string) => {
   class="w-full bg-black px-2 sm:px-6 lg:px-20 py-2 sm:py-4 relative z-50"
 >
   <div
-    class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-20 py-2 bg-dark rounded-xl relative"
+    class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-20 py-2 bg-secondary rounded-xl relative"
   >
     <div class="flex items-center justify-between">
       <a href="/" class="shrink-0 z-50 transition-opacity hover:opacity-80">
@@ -35,7 +35,7 @@ const getLinkClass = (path: string) => {
         />
       </a>
 
-      <nav class="hidden lg:flex items-center gap-6 xl:gap-8">
+      <nav class="hidden lg:flex items-center gap-6 xl:gap-8 text-xl">
         <a href="/" class={getLinkClass("/")}>Inicio</a>
         <a href="/premios" class={getLinkClass("/premios")}>Premios</a>
         <a href="/ganadores" class={getLinkClass("/ganadores")}>Ganadores</a>
@@ -46,11 +46,14 @@ const getLinkClass = (path: string) => {
       </nav>
 
       <div class="hidden md:flex items-center gap-2 lg:gap-4">
-        <Button label="Suscríbete" class="text-sm lg:text-base px-3 lg:px-4" />
+        <Button
+          label="Suscríbete"
+          class="lg:text-xl px-3 lg:px-4 hover:bg-black hover:text-intense-pink"
+        />
         <Button
           variant="ghost"
           label="Iniciar Sesión"
-          class="text-sm lg:text-base px-3 lg:px-4"
+          class="lg:text-xl px-3 lg:px-4"
           onclick="window.location.href='/login'"
         />
       </div>
@@ -104,7 +107,11 @@ const getLinkClass = (path: string) => {
         >
 
         <div class="flex flex-col gap-3 pt-4 mt-2 border-t border-charcoal/20">
-          <Button label="Suscríbete" class="w-full" />
+          <Button
+            label="Suscríbete"
+            class="w-full hover:bg-white hover:text-intense-pink"
+            onclick="window.location.href='/registro'"
+          />
           <Button
             variant="ghost"
             label="Iniciar Sesión"

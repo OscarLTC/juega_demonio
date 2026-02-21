@@ -11,9 +11,7 @@ interface Props {
 
 const { prize } = Astro.props;
 
-const formattedDate = format(parseISO(prize.date), "EEE. d MMM", {
-  locale: es,
-});
+const formattedDate = format(parseISO(prize.date), "EEE. d MMM");
 ---
 
 <section

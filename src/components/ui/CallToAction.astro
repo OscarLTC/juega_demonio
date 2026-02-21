@@ -1,0 +1,25 @@
+---
+import Button from "./Button.astro";
+---
+
+<section class="w-full max-w-7xl mx-auto px-4 mt-28">
+  <div
+    class="relative bg-intense-pink rounded-t-3xl border-t-4 border-x-4 border-white shadow-[0_0_40px_rgba(255,0,128,0.5)] overflow-hidden"
+  >
+    <div
+      class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 px-8 md:px-16 py-4 md:py-6"
+    >
+      <h2
+        class="text-white font-black text-3xl md:text-4xl italic text-center md:text-left leading-tight"
+      >
+        Tu también puedes ser uno de ellos
+      </h2>
+
+      <Button
+        label="Quiero Unirme"
+        onclick="window.location.href='/registro'"
+        class="bg-white text-intense-pink text-xl sm:text-3xl hover:bg-black hover:text-white hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] border-2 border-white"
+      />
+    </div>
+  </div>
+</section>
