@@ -1,0 +1,90 @@
+---
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  index: number;
+  question: string;
+  answer: string;
+}
+
+const { index, question, answer } = Astro.props;
+---
+
+<div class="faq-item" data-faq-item>
+  <button
+    class="w-full flex items-center justify-between gap-4 px-8 py-6 bg-intense-pink cursor-pointer rounded-md text-left"
+    aria-expanded="false"
+    data-faq-trigger
+  >
+    <span
+      class="text-white font-bold font-family-display text-base md:text-2xl leading-snug"
+    >
+      {index}. {question}
+    </span>
+
+    <span
+      class="shrink-0 text-white transition-opacity duration-200"
+      data-icon-plus
+    >
+      <Icon name="radix-icons:plus-circled" class="w-6 h-6" />
+    </span>
+    <span
+      class="shrink-0 text-white hidden transition-opacity duration-200"
+      data-icon-minus
+    >
+      <Icon name="radix-icons:minus-circled" class="w-6 h-6" />
+    </span>
+  </button>
+
+  <div class="faq-body" data-faq-body>
+    <div class="overflow-hidden">
+      <div class="py-5 px-8 md:px-24">
+        <div class="flex gap-4 items-stretch">
+          <div class="w-1 rounded-full bg-intense-pink shrink-0"></div>
+          <p class="text-dark text-xs md:text-sm leading-5 font-medium pl-4">
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .faq-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .faq-body.is-open {
+    grid-template-rows: 1fr;
+  }
+</style>
+
+<script>
+  document.querySelectorAll("[data-faq-item]").forEach((item) => {
+    const trigger = item.querySelector(
+      "[data-faq-trigger]",
+    ) as HTMLButtonElement;
+    const body = item.querySelector("[data-faq-body]") as HTMLElement;
+    const iconPlus = item.querySelector("[data-icon-plus]") as HTMLElement;
+    const iconMinus = item.querySelector("[data-icon-minus]") as HTMLElement;
+
+    trigger.addEventListener("click", () => {
+      const isOpen = trigger.getAttribute("aria-expanded") === "true";
+
+      if (isOpen) {
+        trigger.setAttribute("aria-expanded", "false");
+        body.classList.remove("is-open");
+        iconPlus.classList.remove("hidden");
+        iconMinus.classList.add("hidden");
+      } else {
+        trigger.setAttribute("aria-expanded", "true");
+        body.classList.add("is-open");
+        iconPlus.classList.add("hidden");
+        iconMinus.classList.remove("hidden");
+      }
+    });
+  });
+</script>

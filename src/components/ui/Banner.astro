@@ -3,28 +3,60 @@ import { Image } from "astro:assets";
 
 import SunBannerLeft from "../../assets/img/sun-banner-left.svg";
 import SunBannerRight from "../../assets/img/sun-banner-right.svg";
+import Character from "../../assets/img/banner-only.svg";
+import { cn } from "../../utils/cn";
 
-const { title } = Astro.props;
+const { title, showCharacter = false } = Astro.props;
+
+const CHARACTER_HEIGHT = 360;
+const BANNER_HEIGHT = 136;
 ---
 
-<div class="w-full flex justify-between items-center bg-intense-pink">
-  <Image
-    src={SunBannerLeft}
-    alt="Sun Banner Left"
-    loading="eager"
-    width={100}
-    height={100}
-  />
-  <h1
-    class="text-pale-pink text-6xl md:text-[80px] font-bold font-family-nata -skew-x-6 capitalize text-center"
+<div
+  class={cn("relative w-full place-content-top", {
+    " h-[136px]": !showCharacter,
+    "pt-0 md:pt-20 md:h-[360px]": showCharacter,
+  })}
+>
+  <div
+    class="w-full flex justify-between items-center bg-intense-pink"
+    style={`height: ${BANNER_HEIGHT}px;`}
   >
-    {title}
-  </h1>
-  <Image
-    src={SunBannerRight}
-    alt="Sun Banner Right"
-    loading="eager"
-    width={100}
-    height={100}
-  />
+    <Image
+      src={SunBannerLeft}
+      alt="Sun Banner Left"
+      loading="eager"
+      width={100}
+      height={100}
+      class="h-full"
+    />
+    <h1
+      class="text-pale-pink text-6xl md:text-[80px] font-bold font-family-nata -skew-x-6 capitalize text-center"
+    >
+      {title}
+    </h1>
+    <Image
+      src={SunBannerRight}
+      alt="Sun Banner Right"
+      loading="eager"
+      width={100}
+      height={100}
+      class="h-full"
+    />
+  </div>
+
+  {
+    showCharacter && (
+      <div class="hidden md:block md:absolute bottom-0 right-0 sm:right-8 md:right-16 lg:right-80 pointer-events-none">
+        <Image
+          src={Character}
+          alt="Character"
+          loading="eager"
+          width={220}
+          height={CHARACTER_HEIGHT}
+          style="display: block;"
+        />
+      </div>
+    )
+  }
 </div>

@@ -8,9 +8,14 @@ import { ClientRouter } from "astro:transitions";
 interface Props {
   title: string;
   showSocialLinks?: boolean;
+  socialLinksVariant?: "light" | "dark";
 }
 
-const { title, showSocialLinks = true } = Astro.props;
+const {
+  title,
+  showSocialLinks = true,
+  socialLinksVariant = "light",
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -53,6 +58,9 @@ const { title, showSocialLinks = true } = Astro.props;
       <slot />
     </main>
 
-    <Footer showSocialLinks={showSocialLinks} />
+    <Footer
+      showSocialLinks={showSocialLinks}
+      socialLinksVariant={socialLinksVariant}
+    />
   </body>
 </html>

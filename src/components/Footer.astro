@@ -3,16 +3,27 @@ import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { cn } from "../utils/cn";
 
-const { showSocialLinks = true } = Astro.props;
+const { showSocialLinks = true, socialLinksVariant = "light" } = Astro.props;
+
+const isDark = socialLinksVariant === "dark";
 ---
 
 <footer class="w-full bg-black mt-auto">
-  <div class={cn("w-full", showSocialLinks ? "bg-pale-pink block" : "hidden")}>
+  <div
+    class={cn("w-full", {
+      hidden: !showSocialLinks,
+      "bg-pale-pink": !isDark,
+      "bg-intense-pink": isDark,
+    })}
+  >
     <div
       class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-20 py-8 sm:py-12 flex justify-between"
     >
       <h2
-        class="text-intense-pink text-7xl font-bold font-family-nata -skew-x-6"
+        class={cn("text-7xl font-bold font-family-nata -skew-x-6", {
+          "text-intense-pink": !isDark,
+          "text-pale-pink": isDark,
+        })}
       >
         SÍGUEME PARA ENTERARTE DE MÁS SORTEOS
       </h2>
@@ -21,12 +32,18 @@ const { showSocialLinks = true } = Astro.props;
           href="https://kick.com/onlyrgx"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-intense-pink transition-all hover:scale-105 rounded"
+          class={cn("transition-all hover:scale-105 rounded", {
+            "text-intense-pink": !isDark,
+            "text-pale-pink": isDark,
+          })}
           aria-label="Kick"
         >
           <Icon
             name="simple-icons:kick"
-            class="size-10 p-2 bg-intense-pink rounded-md text-pale-pink"
+            class={cn("size-10 p-2 rounded-md", {
+              "bg-intense-pink text-pale-pink": !isDark,
+              "bg-pale-pink text-intense-pink": isDark,
+            })}
           />
         </a>
 
@@ -34,7 +51,10 @@ const { showSocialLinks = true } = Astro.props;
           href="https://www.tiktok.com/@onlyrgxoficial"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-intense-pink transition-all hover:scale-105"
+          class={cn("transition-all hover:scale-105", {
+            "text-intense-pink": !isDark,
+            "text-pale-pink": isDark,
+          })}
           aria-label="TikTok"
         >
           <Icon name="ant-design:tik-tok-filled" class="size-10 sm:size-12" />
@@ -43,7 +63,10 @@ const { showSocialLinks = true } = Astro.props;
           href="https://www.instagram.com/onlyrgx"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-intense-pink transition-all hover:scale-105 -p-1"
+          class={cn("transition-all hover:scale-105 -p-1", {
+            "text-intense-pink": !isDark,
+            "text-pale-pink": isDark,
+          })}
           aria-label="Instagram"
         >
           <Icon name="ant-design:instagram-filled" class="size-10 sm:size-12" />

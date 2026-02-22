@@ -1,0 +1,100 @@
+---
+import FaqAccordion from "./FaqAccordion.astro";
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface FaqCategory {
+  title: string;
+  items: FaqItem[];
+}
+
+const faqData: FaqCategory[] = [
+  {
+    title: "Juega Demonio",
+    items: [
+      {
+        question: "¿Qué es Juega Demonio?",
+        answer:
+          "Es la comunidad exclusiva de OnlyRGX, donde podrás participar en sorteos semanales de periféricos gamer y mucho más. Con el tiempo, iremos sumando premios más grandes como electrodomésticos, departamentos, vehículos 0 km y otros beneficios exclusivos junto a nuestras marcas aliadas.",
+      },
+      {
+        question: "¿Cómo me vuelvo parte de Juega Demonio?",
+        answer:
+          "Es muy sencillo: regístrate en nuestra plataforma, elige el plan de suscripción que mejor se adapte a ti, realiza tu pago y ¡listo! Desde ese momento ya estás participando en nuestros sorteos semanales.",
+      },
+      {
+        question:
+          "¿Cómo puedo aprovechar los beneficios y/o descuentos de NHSS luego de ser suscriptor?",
+        answer:
+          "Una vez que seas suscriptor, recibirás en tu correo electrónico registrado un código de descuento exclusivo para acceder a los beneficios de nuestros socios. También puedes revisar la sección de beneficios dentro de tu perfil.",
+      },
+    ],
+  },
+  {
+    title: "Premios",
+    items: [
+      {
+        question: "¿Cómo sé si soy uno de los ganadores semanales?",
+        answer:
+          "Los ganadores son anunciados cada semana a través de nuestras redes sociales (Instagram, TikTok y Kick) y también se publican en la sección 'Ganadores' de nuestra web. Además, si eres ganador, te notificaremos directamente al correo electrónico registrado.",
+      },
+      {
+        question: "¿Puedo participar desde el extranjero?",
+        answer:
+          "Actualmente, los sorteos de Juega Demonio están habilitados para residentes en Perú. Si vives en el extranjero, podrás registrarte, pero la entrega de premios físicos está limitada al territorio peruano.",
+      },
+      {
+        question: "¿Cómo reclamo mi premio si gano?",
+        answer:
+          "Si resultas ganador, nos pondremos en contacto contigo a través del correo electrónico registrado dentro de las 48 horas siguientes al sorteo. Tendrás un plazo de 7 días hábiles para responder y coordinar la entrega de tu premio.",
+      },
+    ],
+  },
+  {
+    title: "Mi suscripción",
+    items: [
+      {
+        question: "¿Cómo cancelo mi suscripción?",
+        answer:
+          "Puedes cancelar tu suscripción en cualquier momento desde la sección 'Mi cuenta' dentro de la plataforma. La cancelación aplica a partir del siguiente ciclo de facturación; los sorteos vigentes durante el período pagado siguen activos.",
+      },
+      {
+        question: "¿Cómo actualizo mis datos?",
+        answer:
+          "Ingresa a tu perfil en la plataforma y selecciona 'Editar datos'. Podrás actualizar tu nombre, dirección de correo electrónico, teléfono y dirección de envío. Recuerda que el correo debe mantenerse activo para recibir notificaciones.",
+      },
+      {
+        question: "¿Cómo contacto con el servicio al cliente?",
+        answer:
+          "Puedes escribirnos al correo soporte@onlyrgx.com o utilizar el formulario de contacto en nuestra web. Nuestro horario de atención es de lunes a viernes de 9 am a 6 pm y sábados de 9 am a 2 pm.",
+      },
+    ],
+  },
+];
+---
+
+<section class="bg-pale-pink py-12 px-4 sm:px-6 lg:px-8 min-h-[60vh]">
+  <div class="max-w-4xl mx-auto flex flex-col gap-10 mt-2">
+    {
+      faqData.map((category) => (
+        <div class="flex flex-col gap-10">
+          <h2 class="text-intense-pink font-bold font-family-display text-4xl md:text-5xl mb-2">
+            {category.title}
+          </h2>
+          <div class="flex flex-col gap-3">
+            {category.items.map((item, idx) => (
+              <FaqAccordion
+                index={idx + 1}
+                question={item.question}
+                answer={item.answer}
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
