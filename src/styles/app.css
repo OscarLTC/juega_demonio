@@ -89,3 +89,97 @@
     @apply block text-sm font-medium text-gray mb-1;
   }
 }
+
+/* React Datepicker wrapper full width */
+.react-datepicker-wrapper {
+  display: block !important;
+  width: 100% !important;
+}
+
+/* React Datepicker dark theme */
+.react-datepicker-popper {
+  z-index: 50 !important;
+}
+
+.react-datepicker {
+  background-color: oklch(0.2435 0 0) !important;
+  border: 1px solid oklch(0.5243 0 0 / 0.3) !important;
+  border-radius: 0.75rem !important;
+  font-family: var(--font-family-primary) !important;
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background-color: oklch(0.2046 0 0) !important;
+  border-bottom: 1px solid oklch(0.5243 0 0 / 0.3) !important;
+  padding-top: 0.75rem !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker-time__header {
+  color: oklch(0.92 0.01 270) !important;
+}
+
+.react-datepicker__day-name {
+  color: oklch(0.55 0.01 270) !important;
+}
+
+.react-datepicker__day {
+  color: oklch(0.68 0.01 270) !important;
+  border-radius: 0.5rem !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: oklch(0.6432 0.2593 1.25 / 0.2) !important;
+  color: oklch(0.92 0.01 270) !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: oklch(0.6432 0.2593 1.25) !important;
+  color: white !important;
+}
+
+.react-datepicker__day--today {
+  font-weight: bold;
+  color: oklch(0.6432 0.2593 1.25) !important;
+}
+
+.react-datepicker__day--disabled {
+  color: oklch(0.5243 0 0 / 0.5) !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: oklch(0.68 0.01 270) !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: oklch(0.6432 0.2593 1.25) !important;
+}
+
+.react-datepicker__time-container {
+  border-left: 1px solid oklch(0.5243 0 0 / 0.3) !important;
+}
+
+.react-datepicker__time {
+  background-color: oklch(0.2435 0 0) !important;
+}
+
+.react-datepicker__time-list-item {
+  color: oklch(0.68 0.01 270) !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: oklch(0.6432 0.2593 1.25 / 0.2) !important;
+  color: oklch(0.92 0.01 270) !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: oklch(0.6432 0.2593 1.25) !important;
+  color: white !important;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}

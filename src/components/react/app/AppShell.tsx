@@ -9,6 +9,7 @@ import DashboardContent from './DashboardPage'
 import SubscriptionsContent from './SubscriptionsPage'
 import SuperChancesContent from './SuperChancesPage'
 import OrdersContent from './OrdersPage'
+import ProfileContent from './ProfilePage'
 import AdminRafflesContent from '../admin/AdminRafflesPage'
 import AdminParticipantsContent from '../admin/AdminParticipantsPage'
 import AdminOrdersContent from '../admin/AdminOrdersPage'
@@ -43,6 +44,7 @@ function AppLayout() {
             <Route path="suscripciones" element={<AuthGuard><SubscriptionsContent /></AuthGuard>} />
             <Route path="super-chances" element={<AuthGuard><SuperChancesContent /></AuthGuard>} />
             <Route path="ordenes" element={<AuthGuard><OrdersContent /></AuthGuard>} />
+            <Route path="perfil" element={<AuthGuard><ProfileContent /></AuthGuard>} />
             <Route path="admin/sorteos" element={<AdminGuard><AdminRafflesContent /></AdminGuard>} />
             <Route path="admin/participantes" element={<AdminGuard><AdminParticipantsContent /></AdminGuard>} />
             <Route path="admin/ordenes" element={<AdminGuard><AdminOrdersContent /></AdminGuard>} />
