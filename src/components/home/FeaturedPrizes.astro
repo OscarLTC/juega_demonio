@@ -52,14 +52,14 @@ const prizes = [
 ---
 
 <section class="py-20 bg-black overflow-hidden">
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-5xl mx-auto scale-110">
     <PrizeCarousel client:visible prizes={prizes} />
 
     <div class="flex justify-center mt-12">
       <Button
         label="Ver todos los premios"
         onclick="window.location.href='/premios'"
-        class="px-8 py-3 text-xl"
+        class="mt-4 sm:mt-6 text-base sm:text-lg md:text-2xl self-center px-4 sm:px-8 py-2 sm:py-3 border border-transparent hover:bg-black hover:border-white hover:text-intense-pink"
       />
     </div>
   </div>

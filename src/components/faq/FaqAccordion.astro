@@ -63,28 +63,30 @@ const { index, question, answer } = Astro.props;
 </style>
 
 <script>
-  document.querySelectorAll("[data-faq-item]").forEach((item) => {
-    const trigger = item.querySelector(
-      "[data-faq-trigger]",
-    ) as HTMLButtonElement;
-    const body = item.querySelector("[data-faq-body]") as HTMLElement;
-    const iconPlus = item.querySelector("[data-icon-plus]") as HTMLElement;
-    const iconMinus = item.querySelector("[data-icon-minus]") as HTMLElement;
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll("[data-faq-item]").forEach((item) => {
+      const trigger = item.querySelector(
+        "[data-faq-trigger]",
+      ) as HTMLButtonElement;
+      const body = item.querySelector("[data-faq-body]") as HTMLElement;
+      const iconPlus = item.querySelector("[data-icon-plus]") as HTMLElement;
+      const iconMinus = item.querySelector("[data-icon-minus]") as HTMLElement;
 
-    trigger.addEventListener("click", () => {
-      const isOpen = trigger.getAttribute("aria-expanded") === "true";
+      trigger.addEventListener("click", () => {
+        const isOpen = trigger.getAttribute("aria-expanded") === "true";
 
-      if (isOpen) {
-        trigger.setAttribute("aria-expanded", "false");
-        body.classList.remove("is-open");
-        iconPlus.classList.remove("hidden");
-        iconMinus.classList.add("hidden");
-      } else {
-        trigger.setAttribute("aria-expanded", "true");
-        body.classList.add("is-open");
-        iconPlus.classList.add("hidden");
-        iconMinus.classList.remove("hidden");
-      }
+        if (isOpen) {
+          trigger.setAttribute("aria-expanded", "false");
+          body.classList.remove("is-open");
+          iconPlus.classList.remove("hidden");
+          iconMinus.classList.add("hidden");
+        } else {
+          trigger.setAttribute("aria-expanded", "true");
+          body.classList.add("is-open");
+          iconPlus.classList.add("hidden");
+          iconMinus.classList.remove("hidden");
+        }
+      });
     });
   });
 </script>
