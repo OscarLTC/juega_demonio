@@ -8,15 +8,53 @@ import Check from 'lucide-react/dist/esm/icons/check'
 import Ticket from 'lucide-react/dist/esm/icons/ticket'
 import Zap from 'lucide-react/dist/esm/icons/zap'
 import RefreshCw from 'lucide-react/dist/esm/icons/refresh-cw'
+import AlertTriangle from 'lucide-react/dist/esm/icons/alert-triangle'
+import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
 import PaymentModal from '../shared/PaymentModal'
 
-const SUB_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
-  PENDING: { cls: 'app-badge-warning', label: 'Pendiente' },
-  ACTIVE: { cls: 'app-badge-success', label: 'Activo' },
-  EXPIRED: { cls: 'app-badge-danger', label: 'Expirado' },
-  CANCELLED: { cls: 'app-badge-info', label: 'Cancelado' },
+const SUB_STATUS_CONFIG: Record<string, { cls: string; label: string; color: string }> = {
+  PENDING: { cls: 'app-badge-warning', label: 'Pendiente', color: 'yellow' },
+  ACTIVE: { cls: 'app-badge-success', label: 'Activo', color: 'green' },
+  EXPIRED: { cls: 'app-badge-danger', label: 'Expirado', color: 'red' },
+  CANCELLED: { cls: 'app-badge-info', label: 'Cancelado', color: 'blue' },
+}
+
+function RaffleProgressBar({ remaining, total }: { remaining: number; total: number }) {
+  const safeTotal = total > 0 ? total : 1
+  const pct = Math.round((remaining / safeTotal) * 100)
+  const isZero = remaining === 0
+  const isLow = remaining === 1 && total > 1
+
+  const barColor = isZero
+    ? 'bg-red-500'
+    : isLow
+      ? 'bg-amber-500'
+      : 'bg-green-500'
+
+  const trackColor = isZero
+    ? 'bg-red-500/10'
+    : 'bg-charcoal/20'
+
+  return (
+    <div className="mt-3">
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs text-dark-gray">Sorteos restantes</span>
+        <span className={`text-xs font-semibold tabular-nums ${
+          isZero ? 'text-red-400' : isLow ? 'text-amber-400' : 'text-green-400'
+        }`}>
+          {remaining} / {safeTotal}
+        </span>
+      </div>
+      <div className={`h-1.5 rounded-full ${trackColor} overflow-hidden`}>
+        <div
+          className={`h-full rounded-full ${barColor} transition-all duration-500`}
+          style={{ width: `${isZero ? 100 : pct}%`, opacity: isZero ? 0.3 : 1 }}
+        />
+      </div>
+    </div>
+  )
 }
 
 export default function SubscriptionsContent() {
@@ -89,11 +127,12 @@ export default function SubscriptionsContent() {
     setPendingOrder(null)
   }
 
-  const getStatusBadge = (status: string) =>
-    SUB_STATUS_BADGES[status] || { cls: 'app-badge-info', label: status }
+  const getStatusConfig = (status: string) =>
+    SUB_STATUS_CONFIG[status] || { cls: 'app-badge-info', label: status, color: 'blue' }
 
   const hasCards = myCards && myCards.length > 0
   const isPending = createMutation.isPending || recurringMutation.isPending
+  const activeSub = mySubscriptions?.find((s: any) => s.status === 'ACTIVE')
 
   if (plansLoading) {
     return (
@@ -110,38 +149,67 @@ export default function SubscriptionsContent() {
         <p className="text-dark-gray">Elige un plan para participar en los sorteos</p>
       </div>
 
-      {mySubscriptions?.find((s: any) => s.status === 'ACTIVE') && (
-        <div className="app-card border-green-500/30 bg-green-500/5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-green-400" />
+      {/* Active subscription — prominent card */}
+      {activeSub && (
+        <div className={`app-card overflow-hidden ${
+          activeSub.remainingRaffles === 0
+            ? 'border-red-500/30'
+            : 'border-green-500/30'
+        }`}>
+          {/* Top accent line */}
+          <div className={`absolute top-0 left-0 right-0 h-px ${
+            activeSub.remainingRaffles === 0 ? 'bg-red-500/50' : 'bg-green-500/50'
+          }`} />
+
+          <div className="flex items-start gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+              activeSub.remainingRaffles === 0
+                ? 'bg-red-500/15'
+                : 'bg-green-500/15'
+            }`}>
+              {activeSub.remainingRaffles === 0 ? (
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              ) : (
+                <CheckCircle className="w-6 h-6 text-green-400" />
+              )}
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-dark-gray">Tu suscripcion activa</p>
-              <p className="text-lg font-bold text-light-gray">
-                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').typeName}
-              </p>
-              <p className="text-sm text-dark-gray">
-                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').remainingRaffles} sorteo(s) restantes
-                {mySubscriptions.find((s: any) => s.status === 'ACTIVE').recurring && (
-                  <span className="ml-2 text-intense-pink">
-                    <RefreshCw className="w-3 h-3 inline mr-1" />
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm text-dark-gray">Tu suscripcion activa</p>
+                <span className={activeSub.remainingRaffles === 0 ? 'app-badge-danger' : 'app-badge-success'}>
+                  {activeSub.remainingRaffles === 0 ? 'Agotado' : 'Activa'}
+                </span>
+                {activeSub.recurring && (
+                  <span className="inline-flex items-center gap-1 text-xs text-intense-pink bg-intense-pink/10 px-2 py-0.5 rounded-full">
+                    <RefreshCw className="w-3 h-3" />
                     Recurrente
                   </span>
                 )}
+              </div>
+
+              <p className="text-lg font-bold text-light-gray mt-1">
+                {activeSub.typeName}
               </p>
+
+              <RaffleProgressBar
+                remaining={activeSub.remainingRaffles}
+                total={activeSub.rafflesCovered || activeSub.remainingRaffles || 1}
+              />
+
+              {activeSub.remainingRaffles === 0 && (
+                <p className="text-sm text-red-400/80 mt-2">
+                  Ya usaste todos tus sorteos. Renueva tu plan para seguir participando.
+                </p>
+              )}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="app-badge-success">Activa</span>
-              {mySubscriptions.find((s: any) => s.status === 'ACTIVE').recurring && (
+
+            <div className="shrink-0 flex flex-col items-end gap-2">
+              {activeSub.recurring && (
                 <button
-                  onClick={() =>
-                    cancelMutation.mutate(
-                      mySubscriptions.find((s: any) => s.status === 'ACTIVE').id
-                    )
-                  }
+                  onClick={() => cancelMutation.mutate(activeSub.id)}
                   disabled={cancelMutation.isPending}
-                  className="text-xs text-red-400 hover:text-red-300 underline"
+                  className="text-xs text-red-400 hover:text-red-300 transition-colors"
                 >
                   {cancelMutation.isPending ? 'Cancelando...' : 'Cancelar recurrencia'}
                 </button>
@@ -292,39 +360,125 @@ export default function SubscriptionsContent() {
         </Alert>
       )}
 
+      {/* Subscription History */}
       <div>
-        <h2 className="text-xl font-bold text-light-gray mb-4">Mis Suscripciones</h2>
+        <h2 className="text-xl font-bold text-light-gray mb-4">Historial de Suscripciones</h2>
         {subsLoading ? (
           <LoadingSpinner />
         ) : mySubscriptions?.length === 0 ? (
-          <Alert variant="info">
-            No tienes suscripciones activas. Selecciona un plan para comenzar.
-          </Alert>
+          <div className="app-card flex flex-col items-center text-center py-10">
+            <div className="w-16 h-16 rounded-2xl bg-intense-pink/10 flex items-center justify-center mb-4">
+              <Ticket className="w-8 h-8 text-intense-pink/60" />
+            </div>
+            <p className="text-light-gray font-semibold mb-1">Sin suscripciones aun</p>
+            <p className="text-sm text-dark-gray max-w-xs">
+              Selecciona un plan arriba para comenzar a participar en los sorteos.
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            {mySubscriptions?.map((sub: any) => (
-              <div key={sub.id} className="app-card flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-intense-pink/20 flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-intense-pink" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-light-gray">
-                      {sub.typeName}
-                      {sub.recurring && (
-                        <RefreshCw className="w-3 h-3 inline ml-2 text-intense-pink" />
+            {mySubscriptions?.map((sub: any) => {
+              const config = getStatusConfig(sub.status)
+              const isActive = sub.status === 'ACTIVE'
+              const isExpired = sub.status === 'EXPIRED'
+              const isZero = sub.remainingRaffles === 0
+              const total = sub.rafflesCovered || sub.remainingRaffles || 1
+
+              return (
+                <div
+                  key={sub.id}
+                  className={`app-card transition-colors ${
+                    isActive && isZero
+                      ? 'border-red-500/20'
+                      : isActive
+                        ? 'border-green-500/20'
+                        : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Status icon */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      isActive && !isZero
+                        ? 'bg-green-500/15'
+                        : isActive && isZero
+                          ? 'bg-red-500/15'
+                          : isExpired
+                            ? 'bg-charcoal/20'
+                            : 'bg-intense-pink/10'
+                    }`}>
+                      {isActive && !isZero ? (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      ) : isActive && isZero ? (
+                        <AlertTriangle className="w-5 h-5 text-red-400" />
+                      ) : isExpired ? (
+                        <CreditCard className="w-5 h-5 text-dark-gray" />
+                      ) : (
+                        <CreditCard className="w-5 h-5 text-intense-pink" />
                       )}
-                    </p>
-                    <p className="text-sm text-dark-gray">
-                      {sub.remainingRaffles} sorteo(s) restantes
-                    </p>
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-light-gray">
+                          {sub.typeName}
+                        </p>
+                        {sub.recurring && (
+                          <RefreshCw className="w-3 h-3 text-intense-pink" />
+                        )}
+                      </div>
+
+                      {isActive ? (
+                        isZero ? (
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="text-sm text-red-400">Plan agotado</span>
+                            <span className="text-dark-gray">·</span>
+                            <span className="text-sm text-dark-gray">0 sorteos disponibles</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="text-sm text-green-400">
+                              {sub.remainingRaffles} sorteo{sub.remainingRaffles !== 1 ? 's' : ''} restante{sub.remainingRaffles !== 1 ? 's' : ''}
+                            </span>
+                            <span className="text-dark-gray">·</span>
+                            <span className="text-sm text-dark-gray">de {total}</span>
+                          </div>
+                        )
+                      ) : (
+                        <p className="text-sm text-dark-gray mt-0.5">
+                          {isExpired ? 'Suscripcion finalizada' : config.label}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Right side: badge + action */}
+                    <div className="shrink-0 flex items-center gap-3">
+                      {isActive && isZero ? (
+                        <button
+                          onClick={() => {
+                            const plansSection = document.querySelector('.grid.md\\:grid-cols-3')
+                            plansSection?.scrollIntoView({ behavior: 'smooth' })
+                          }}
+                          className="flex items-center gap-1 text-xs text-intense-pink hover:text-pink transition-colors"
+                        >
+                          Renovar
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+                      ) : (
+                        <span className={config.cls}>
+                          {config.label}
+                        </span>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Progress bar for active subscriptions */}
+                  {isActive && (
+                    <RaffleProgressBar remaining={sub.remainingRaffles} total={total} />
+                  )}
                 </div>
-                <span className={getStatusBadge(sub.status).cls}>
-                  {getStatusBadge(sub.status).label}
-                </span>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
