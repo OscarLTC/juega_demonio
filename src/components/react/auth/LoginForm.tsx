@@ -50,9 +50,9 @@ function LoginContent() {
       <div className="w-full max-w-md">
         <div className="bg-dark border border-charcoal/30 rounded-2xl p-8">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-intense-pink/20 rounded-full mb-4">
+            <a href="/" className="inline-flex items-center justify-center w-16 h-16 bg-intense-pink/20 rounded-full mb-4 hover:bg-intense-pink/30 transition-colors">
               <img src="/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
-            </div>
+            </a>
             <h1 className="text-2xl font-bold text-light-gray">Bienvenido</h1>
             <p className="text-dark-gray mt-1">Inicia sesion en tu cuenta</p>
           </div>

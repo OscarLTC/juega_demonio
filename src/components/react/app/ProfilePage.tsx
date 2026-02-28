@@ -109,7 +109,6 @@ export default function ProfilePage() {
     },
   })
 
-  // Load Culqi.js script
   useEffect(() => {
     if (window.Culqi) {
       setCulqiLoaded(true)
@@ -142,7 +141,6 @@ export default function ProfilePage() {
     document.head.appendChild(script)
   }, [])
 
-  // Setup global Culqi callback
   useEffect(() => {
     window.culqi = () => {
       if (processingRef.current) return
@@ -169,7 +167,6 @@ export default function ProfilePage() {
     setAddingCard(true)
     processingRef.current = false
 
-    // Culqi requires an amount to open, we use 100 (S/1.00) as placeholder for tokenization
     window.Culqi.publicKey = CULQI_PUBLIC_KEY
     window.Culqi.settings({
       title: 'Guardar Tarjeta',
@@ -208,39 +205,56 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-light-gray">Mi Perfil</h1>
-        <p className="text-dark-gray">Gestiona tu informacion personal y tarjetas</p>
+        <h1 className="app-heading">Mi Perfil</h1>
+        <p className="app-heading-sub">Informacion personal y tarjetas guardadas</p>
       </div>
 
       {/* Personal Data */}
-      <div className="app-card">
-        <h2 className="text-lg font-semibold text-light-gray mb-4 flex items-center gap-2">
-          <User className="w-5 h-5 text-intense-pink" />
-          Datos Personales
-        </h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="app-label">Nombre</label>
-            <p className="text-light-gray">{user?.displayName || '-'}</p>
+      <div className="app-card overflow-hidden">
+        <div className="app-accent-line" />
+
+        <h2 className="flex items-center gap-2.5 mb-5">
+          <div className="app-icon-box app-icon-box-sm bg-intense-pink/10">
+            <User className="w-4 h-4 text-intense-pink" />
           </div>
-          <div>
-            <label className="app-label flex items-center gap-1">
+          <span
+            className="text-lg font-bold text-light-gray tracking-wide uppercase"
+            style={{ fontFamily: 'var(--font-family-display)' }}
+          >
+            Datos Personales
+          </span>
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="rounded-lg bg-white/[0.03] border border-charcoal/10 px-4 py-3.5">
+            <p className="text-[11px] text-dark-gray uppercase tracking-wider mb-1 font-medium">Nombre</p>
+            <p className="text-light-gray font-medium">{user?.displayName || '-'}</p>
+          </div>
+          <div className="rounded-lg bg-white/[0.03] border border-charcoal/10 px-4 py-3.5">
+            <p className="text-[11px] text-dark-gray uppercase tracking-wider mb-1 flex items-center gap-1 font-medium">
               <Mail className="w-3 h-3" />
               Email
-            </label>
-            <p className="text-light-gray">{user?.email || '-'}</p>
+            </p>
+            <p className="text-light-gray font-medium">{user?.email || '-'}</p>
           </div>
         </div>
       </div>
 
       {/* Saved Cards */}
       <div className="app-card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-light-gray flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-intense-pink" />
-            Tarjetas Guardadas
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="flex items-center gap-2.5">
+            <div className="app-icon-box app-icon-box-sm bg-intense-pink/10">
+              <CreditCard className="w-4 h-4 text-intense-pink" />
+            </div>
+            <span
+              className="text-lg font-bold text-light-gray tracking-wide uppercase"
+              style={{ fontFamily: 'var(--font-family-display)' }}
+            >
+              Tarjetas Guardadas
+            </span>
           </h2>
           <button
             onClick={handleAddCard}
@@ -278,9 +292,9 @@ export default function ProfilePage() {
             <LoadingSpinner />
           </div>
         ) : !cards || cards.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="w-20 h-12 rounded-xl bg-white/5 border border-dashed border-charcoal/30 flex items-center justify-center mx-auto mb-4">
-              <CreditCard className="w-6 h-6 text-dark-gray" />
+          <div className="text-center py-12">
+            <div className="w-20 h-12 rounded-xl bg-white/[0.03] border border-dashed border-charcoal/20 flex items-center justify-center mx-auto mb-4">
+              <CreditCard className="w-6 h-6 text-dark-gray/60" />
             </div>
             <p className="text-gray font-medium">No tienes tarjetas guardadas</p>
             <p className="text-dark-gray text-sm mt-1">
@@ -319,7 +333,7 @@ export default function ProfilePage() {
                   {/* Card number */}
                   <div className="relative">
                     <p className={`font-mono text-lg tracking-[0.2em] ${style.text}`}>
-                      <span className="opacity-50">••••  ••••  ••••</span>  {card.lastFour}
+                      <span className="opacity-50">····  ····  ····</span>  {card.lastFour}
                     </p>
                   </div>
 
@@ -352,7 +366,7 @@ export default function ProfilePage() {
       >
         <div className="space-y-4">
           <p className="text-gray">
-            ¿Estas seguro de que deseas eliminar la tarjeta{' '}
+            Estas seguro de que deseas eliminar la tarjeta{' '}
             <span className="font-semibold text-light-gray">
               {cardToDelete?.brand} ****{cardToDelete?.lastFour}
             </span>

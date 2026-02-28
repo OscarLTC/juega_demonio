@@ -38,6 +38,32 @@ import loginHero from "../assets/img/login-hero.jpg";
         required
       />
 
+      <div class="grid grid-cols-2 gap-4">
+        <Input
+          label="Nombres"
+          type="text"
+          name="firstName"
+          placeholder="Ingresa tus nombres"
+          required
+        />
+        <Input
+          label="Apellidos"
+          type="text"
+          name="lastName"
+          placeholder="Ingresa tus apellidos"
+          required
+        />
+      </div>
+
+      <Input
+        label="DNI"
+        type="text"
+        name="dni"
+        placeholder="Ingresa tu DNI"
+        required
+        maxlength={8}
+      />
+
       <PasswordInput
         label="Contraseña"
         name="password"
@@ -69,8 +95,10 @@ import loginHero from "../assets/img/login-hero.jpg";
         />
       </div>
 
+      <div id="registro-error" class="hidden text-red-500 text-sm text-center"></div>
+
       <div class="pt-4 flex justify-center">
-        <Button type="submit" label="SUSCRIBIRME" />
+        <Button type="submit" label="REGISTRARSE" />
       </div>
     </form>
 
@@ -83,6 +111,10 @@ import loginHero from "../assets/img/login-hero.jpg";
 </Layout>
 
 <script>
+  import axios from "axios";
+
+  const API_BASE_URL = import.meta.env.PUBLIC_API_URL || "/api";
+
   function initRegistroForm() {
     const form = document.getElementById("registro-form") as HTMLFormElement;
     const passwordInput = document.getElementById(
@@ -94,21 +126,64 @@ import loginHero from "../assets/img/login-hero.jpg";
     const passwordError = document.querySelector(
       '[data-password-error="confirm-password"]',
     );
+    const registroError = document.getElementById("registro-error");
 
-    form?.addEventListener("submit", (e) => {
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
       const password = passwordInput?.value;
       const confirmPassword = confirmPasswordInput?.value;
 
       if (password !== confirmPassword) {
-        e.preventDefault();
         passwordError?.classList.remove("hidden");
         confirmPasswordInput?.focus();
         return;
       }
 
       passwordError?.classList.add("hidden");
-      e.preventDefault();
-      window.location.href = "/registro/validar-dni";
+
+      const formData = new FormData(form);
+      const email = formData.get("email") as string;
+      const firstName = formData.get("firstName") as string;
+      const lastName = formData.get("lastName") as string;
+      const dni = formData.get("dni") as string;
+      const submitBtn = form.querySelector(
+        'button[type="submit"]',
+      ) as HTMLButtonElement;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "REGISTRANDO...";
+      }
+
+      if (registroError) {
+        registroError.classList.add("hidden");
+        registroError.textContent = "";
+      }
+
+      try {
+        await axios.post(`${API_BASE_URL}/auth/register`, {
+          email,
+          password,
+          firstName,
+          lastName,
+          dni,
+        });
+
+        window.location.href = `/auth/verificacion-pendiente?email=${encodeURIComponent(email)}`;
+      } catch (err: any) {
+        const message =
+          err.response?.data?.message || "Error al crear la cuenta";
+        if (registroError) {
+          registroError.textContent = message;
+          registroError.classList.remove("hidden");
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "REGISTRARSE";
+        }
+      }
     });
 
     confirmPasswordInput?.addEventListener("input", () => {

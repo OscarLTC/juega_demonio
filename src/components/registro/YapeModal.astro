@@ -69,9 +69,11 @@ const { isOpen = false, precio = 6 } = Astro.props;
         </p>
       </div>
 
+      <div id="yape-error" class="hidden text-red-500 text-xs text-center"></div>
+
       <button
         type="submit"
-        class="w-[290px] mx-auto block h-[34px] bg-[#FD359C] rounded-[7px] text-white font-family-display font-bold text-xl hover:bg-[#FD359C]/90 transition-colors"
+        class="w-[290px] mx-auto block h-[34px] bg-[#FD359C] rounded-[7px] text-white font-family-display font-bold text-xl hover:bg-[#FD359C]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         YAPEAR S/.<span id="yape-precio">{precio}.00</span>
       </button>
@@ -88,10 +90,15 @@ const { isOpen = false, precio = 6 } = Astro.props;
 </div>
 
 <script>
+  import axios from "axios";
+
+  const API_BASE_URL = import.meta.env.PUBLIC_API_URL || "/api";
+
   function initYapeModal() {
     const modal = document.getElementById('yape-modal');
     const closeButtons = modal?.querySelectorAll('[data-close-modal]');
     const form = document.getElementById('yape-form') as HTMLFormElement;
+    const yapeError = document.getElementById('yape-error');
 
     closeButtons?.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -107,10 +114,52 @@ const { isOpen = false, precio = 6 } = Astro.props;
       }
     });
 
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      alert('Verificando pago Yape...');
-      window.location.href = '/registro/confirmacion';
+
+      const order = (window as any).__pendingOrder;
+      if (!order?.id) {
+        if (yapeError) {
+          yapeError.textContent = 'No se encontró la orden. Intenta de nuevo.';
+          yapeError.classList.remove('hidden');
+        }
+        return;
+      }
+
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'PROCESANDO...';
+      }
+
+      if (yapeError) {
+        yapeError.classList.add('hidden');
+        yapeError.textContent = '';
+      }
+
+      try {
+        const token = localStorage.getItem('accessToken');
+        await axios.post(
+          `${API_BASE_URL}/webhooks/simulate/${order.id}?paymentMethod=yape`,
+          {},
+          { headers: token ? { Authorization: `Bearer ${token}` } : {} },
+        );
+
+        // Payment successful
+        window.location.href = '/app/dashboard';
+      } catch (err: any) {
+        const message = err.response?.data?.message || 'Error al procesar el pago con Yape';
+        if (yapeError) {
+          yapeError.textContent = message;
+          yapeError.classList.remove('hidden');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          const selectedPlan = localStorage.getItem('selectedPlan');
+          submitBtn.innerHTML = `YAPEAR S/.<span id="yape-precio">${selectedPlan === 'mensual' ? '6.00' : '16.00'}</span>`;
+        }
+      }
     });
   }
 
@@ -120,6 +169,11 @@ const { isOpen = false, precio = 6 } = Astro.props;
     const precioSpan = document.getElementById('yape-precio');
     if (precioSpan) {
       precioSpan.textContent = selectedPlan === 'mensual' ? '6.00' : '16.00';
+    }
+    const yapeError = document.getElementById('yape-error');
+    if (yapeError) {
+      yapeError.classList.add('hidden');
+      yapeError.textContent = '';
     }
     modal?.classList.remove('hidden');
     modal?.classList.add('flex');

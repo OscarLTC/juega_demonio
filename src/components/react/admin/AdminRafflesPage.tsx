@@ -14,6 +14,7 @@ import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle'
 import Crown from 'lucide-react/dist/esm/icons/crown'
 import Search from 'lucide-react/dist/esm/icons/search'
 import Check from 'lucide-react/dist/esm/icons/check'
+import Ban from 'lucide-react/dist/esm/icons/ban'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import Alert from '../shared/Alert'
 import Modal from '../shared/Modal'
@@ -23,11 +24,15 @@ const RAFFLE_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
   ACTIVE: { cls: 'app-badge-success', label: 'Activo' },
   CLOSING: { cls: 'app-badge-warning', label: 'Cerrando' },
   CLOSED: { cls: 'app-badge-danger', label: 'Cerrado' },
+  CANCELLED: { cls: 'app-badge-danger', label: 'Cancelado' },
 }
 
 export default function AdminRafflesContent() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showWinnerModal, setShowWinnerModal] = useState(false)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [cancelRaffleId, setCancelRaffleId] = useState<string | null>(null)
+  const [cancelRaffleName, setCancelRaffleName] = useState('')
   const [finalizeRaffleId, setFinalizeRaffleId] = useState<string | null>(null)
   const [selectedParticipant, setSelectedParticipant] = useState<any>(null)
   const [participantSearch, setParticipantSearch] = useState('')
@@ -35,11 +40,9 @@ export default function AdminRafflesContent() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    prize: '',
     startsAt: null as Date | null,
     endsAt: null as Date | null,
-    ticketsPerSubscription: 1,
-    ticketsPerSuperChance: 3,
+    gracePeriodMinutes: 15,
   })
   const queryClient = useQueryClient()
 
@@ -114,15 +117,23 @@ export default function AdminRafflesContent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminRaffles'] }),
   })
 
+  const cancelRaffleMutation = useMutation({
+    mutationFn: (id: string) => raffleApi.cancel(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminRaffles'] })
+      setShowCancelModal(false)
+      setCancelRaffleId(null)
+      setCancelRaffleName('')
+    },
+  })
+
   const resetForm = () => {
     setFormData({
       name: '',
       description: '',
-      prize: '',
       startsAt: null,
       endsAt: null,
-      ticketsPerSubscription: 1,
-      ticketsPerSuperChance: 3,
+      gracePeriodMinutes: 15,
     })
   }
 
@@ -134,11 +145,11 @@ export default function AdminRafflesContent() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     createMutation.mutate({
-      ...formData,
+      name: formData.name,
+      description: formData.description,
       startsAt: formData.startsAt?.toISOString() || null,
       endsAt: formData.endsAt?.toISOString() || null,
-      ticketsPerSubscription: parseInt(String(formData.ticketsPerSubscription)),
-      ticketsPerSuperChance: parseInt(String(formData.ticketsPerSuperChance)),
+      gracePeriodMinutes: parseInt(String(formData.gracePeriodMinutes)),
     })
   }
 
@@ -162,8 +173,8 @@ export default function AdminRafflesContent() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-light-gray">Gestion de Sorteos</h1>
-          <p className="text-dark-gray">Administra los sorteos de la plataforma</p>
+          <h1 className="app-heading">Gestion de Sorteos</h1>
+          <p className="app-heading-sub">Administra los sorteos de la plataforma</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -181,24 +192,30 @@ export default function AdminRafflesContent() {
       ) : (
         <div className="space-y-4">
           {[...raffles]?.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((raffle: any) => (
-            <div key={raffle.id} className="app-card">
+            <div key={raffle.id} className="app-card overflow-hidden">
+              {raffle.status === 'ACTIVE' && (
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-green-500/30 to-transparent" />
+              )}
+              {raffle.status === 'CLOSING' && (
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
+              )}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-intense-pink/20 flex items-center justify-center">
+                  <div className="app-icon-box w-12 h-12 rounded-xl bg-intense-pink/10">
                     <Trophy className="w-6 h-6 text-intense-pink" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-lg text-light-gray">{raffle.name}</h3>
+                      <h3
+                        className="font-bold text-lg text-light-gray tracking-wide"
+                        style={{ fontFamily: 'var(--font-family-display)' }}
+                      >{raffle.name}</h3>
                       <span className={getStatusBadge(raffle.status).cls}>
                         {getStatusBadge(raffle.status).label}
                       </span>
                     </div>
                     <p className="text-gray mb-2">{raffle.description}</p>
                     <div className="flex flex-wrap gap-4 text-sm text-dark-gray">
-                      <span className="flex items-center gap-1">
-                        <Trophy className="w-4 h-4" /> Premio: {raffle.prize}
-                      </span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" /> {formatDate(raffle.startsAt)} - {formatDate(raffle.endsAt)}
                       </span>
@@ -226,13 +243,25 @@ export default function AdminRafflesContent() {
                     </>
                   )}
                   {raffle.status === 'ACTIVE' && (
-                    <button
-                      onClick={() => closingMutation.mutate(raffle.id)}
-                      disabled={closingMutation.isPending}
-                      className="app-btn-secondary flex items-center gap-1 text-sm"
-                    >
-                      <Square className="w-4 h-4" /> Iniciar Cierre
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => closingMutation.mutate(raffle.id)}
+                        disabled={closingMutation.isPending}
+                        className="app-btn-secondary flex items-center gap-1 text-sm"
+                      >
+                        <Square className="w-4 h-4" /> Iniciar Cierre
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCancelRaffleId(raffle.id)
+                          setCancelRaffleName(raffle.name)
+                          setShowCancelModal(true)
+                        }}
+                        className="app-btn-danger flex items-center gap-1 text-sm"
+                      >
+                        <Ban className="w-4 h-4" /> Cancelar
+                      </button>
+                    </div>
                   )}
                   {raffle.status === 'CLOSING' && (
                     <div className="flex items-center gap-3">
@@ -263,6 +292,22 @@ export default function AdminRafflesContent() {
                       >
                         <Flag className="w-4 h-4" /> Finalizar
                       </button>
+                      <button
+                        onClick={() => {
+                          setCancelRaffleId(raffle.id)
+                          setCancelRaffleName(raffle.name)
+                          setShowCancelModal(true)
+                        }}
+                        className="app-btn-danger flex items-center gap-1 text-sm bg-orange-500/15 text-orange-400 hover:bg-orange-500/25"
+                      >
+                        <Ban className="w-4 h-4" /> Cancelar
+                      </button>
+                    </div>
+                  )}
+                  {raffle.status === 'CANCELLED' && (
+                    <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                      <Ban className="w-5 h-5 text-red-400" />
+                      <p className="text-sm text-red-400">Sorteo cancelado</p>
                     </div>
                   )}
                   {raffle.status === 'CLOSED' && raffle.winnerParticipantCode && (
@@ -317,19 +362,6 @@ export default function AdminRafflesContent() {
             />
           </div>
 
-          <div>
-            <label className="app-label">Premio</label>
-            <input
-              type="text"
-              name="prize"
-              value={formData.prize}
-              onChange={handleChange}
-              className="app-input"
-              placeholder="Ej: S/ 1,000 en efectivo"
-              required
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="app-label">Fecha de Inicio</label>
@@ -361,31 +393,18 @@ export default function AdminRafflesContent() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="app-label">Tickets por Suscripcion</label>
-              <input
-                type="number"
-                name="ticketsPerSubscription"
-                value={formData.ticketsPerSubscription}
-                onChange={handleChange}
-                className="app-input"
-                min={1}
-                required
-              />
-            </div>
-            <div>
-              <label className="app-label">Tickets por Super Chance</label>
-              <input
-                type="number"
-                name="ticketsPerSuperChance"
-                value={formData.ticketsPerSuperChance}
-                onChange={handleChange}
-                className="app-input"
-                min={1}
-                required
-              />
-            </div>
+          <div>
+            <label className="app-label">Periodo de gracia (minutos)</label>
+            <input
+              type="number"
+              name="gracePeriodMinutes"
+              value={formData.gracePeriodMinutes}
+              onChange={handleChange}
+              className="app-input"
+              min={0}
+              placeholder="15"
+            />
+            <p className="text-xs text-dark-gray mt-1">Tiempo extra despues del cierre para completar pagos pendientes</p>
           </div>
 
           {createMutation.isError && (
@@ -527,6 +546,75 @@ export default function AdminRafflesContent() {
               className="app-btn-danger flex-1"
             >
               {finalizeMutation.isPending ? 'Finalizando...' : 'Finalizar Sorteo'}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Cancel Raffle Confirmation Modal */}
+      <Modal
+        isOpen={showCancelModal}
+        onClose={() => {
+          setShowCancelModal(false)
+          setCancelRaffleId(null)
+          setCancelRaffleName('')
+        }}
+        title="Cancelar Sorteo"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-red-400">Esta accion no se puede deshacer</p>
+              <p className="text-xs text-red-400/70 mt-1">
+                Al cancelar el sorteo se restauraran las suscripciones de los participantes y los super chances se transferiran al proximo sorteo activo.
+              </p>
+            </div>
+          </div>
+
+          <p className="text-gray">
+            ¿Estas seguro de que deseas cancelar el sorteo{' '}
+            <span className="font-semibold text-light-gray">"{cancelRaffleName}"</span>?
+          </p>
+
+          {cancelRaffleMutation.isError && (
+            <Alert variant="error">
+              {(cancelRaffleMutation.error as any)?.response?.data?.message || 'Error al cancelar el sorteo'}
+            </Alert>
+          )}
+
+          <div className="flex gap-3 justify-end pt-2">
+            <button
+              onClick={() => {
+                setShowCancelModal(false)
+                setCancelRaffleId(null)
+                setCancelRaffleName('')
+              }}
+              className="app-btn-secondary px-4 py-2"
+            >
+              Volver
+            </button>
+            <button
+              onClick={() => {
+                if (cancelRaffleId) {
+                  cancelRaffleMutation.mutate(cancelRaffleId)
+                }
+              }}
+              disabled={cancelRaffleMutation.isPending}
+              className="app-btn-danger px-4 py-2 flex items-center gap-2"
+            >
+              {cancelRaffleMutation.isPending ? (
+                <>
+                  <LoadingSpinner size="sm" />
+                  Cancelando...
+                </>
+              ) : (
+                <>
+                  <Ban className="w-4 h-4" />
+                  Cancelar Sorteo
+                </>
+              )}
             </button>
           </div>
         </div>

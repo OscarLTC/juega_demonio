@@ -3,6 +3,9 @@ import Layout from "../../layouts/Layout.astro";
 import RegistroLayout from "../../components/registro/RegistroLayout.astro";
 import PlanCard from "../../components/registro/PlanCard.astro";
 import Checkbox from "../../components/ui/Checkbox.astro";
+import PaymentMethodCard from "../../components/registro/PaymentMethodCard.astro";
+import YapeModal from "../../components/registro/YapeModal.astro";
+import yapeLogo from "../../assets/img/icons/yape.png";
 ---
 
 <Layout title="Seleccionar Plan | Juega Demonio">
@@ -29,6 +32,43 @@ import Checkbox from "../../components/ui/Checkbox.astro";
         />
       </div>
 
+      <!-- Payment Method Selection -->
+      <div>
+        <h3 class="text-center text-pale-pink font-family-display font-bold text-lg mb-4">
+          Selecciona tu método de pago
+        </h3>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+          <PaymentMethodCard
+            id="recurrente"
+            name="metodo-pago"
+            title="Pago Recurrente"
+            description="Tu suscripción se renovará automáticamente según el tiempo del plan elegido"
+            selected={true}
+          >
+            <div class="flex flex-col items-end gap-0.5">
+              <span class="text-[6px] text-[#E9E9E9]">Aceptamos todas las tarjetas</span>
+              <div class="flex gap-0.5 bg-[#D9D9D9] rounded-[3px] p-1">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/100px-Visa_Inc._logo.svg.png" alt="Visa" class="h-[12px] w-auto object-contain" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/100px-Mastercard-logo.svg.png" alt="Mastercard" class="h-[12px] w-auto object-contain" />
+              </div>
+            </div>
+          </PaymentMethodCard>
+
+          <PaymentMethodCard
+            id="yape"
+            name="metodo-pago"
+            title="Pago Manual"
+            description="Tu suscripción se renovará cuando vuelvas a yapear, después del vencimiento de tu plan"
+          >
+            <img
+              src={yapeLogo.src}
+              alt="Yape"
+              class="h-[46px] w-auto object-contain"
+            />
+          </PaymentMethodCard>
+        </div>
+      </div>
+
       <div class="flex justify-center">
         <Checkbox
           name="terms"
@@ -41,6 +81,8 @@ import Checkbox from "../../components/ui/Checkbox.astro";
         La suscripción MENSUAL S/6 y 3 MESES S/16 se renovarán automáticamente en tu tarjeta.
       </p>
 
+      <div id="payment-error" class="hidden text-red-400 text-sm text-center"></div>
+
       <div class="flex gap-4 justify-center pt-2">
         <a
           href="/registro/datos"
@@ -50,80 +92,320 @@ import Checkbox from "../../components/ui/Checkbox.astro";
         </a>
         <button
           type="submit"
-          class="px-8 py-2.5 bg-[#FD359C] text-white font-family-display font-bold text-xl rounded-full hover:bg-[#FD359C]/90 transition-colors"
+          class="px-8 py-2.5 bg-[#FD359C] text-white font-family-display font-bold text-xl rounded-full hover:bg-[#FD359C]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           REALIZAR COMPRA
         </button>
       </div>
     </form>
+
+    <YapeModal />
   </RegistroLayout>
 </Layout>
 
 <script>
-  function initPlanForm() {
-    const planCards = document.querySelectorAll<HTMLElement>('.plan-card');
-    let selectedPlan = '3meses';
+  import axios from "axios";
 
-    planCards.forEach((card) => {
-      card.addEventListener('click', () => {
-        planCards.forEach((c) => {
-          c.classList.remove('selected', 'shadow-[0_0_20px_rgba(253,3,131,0.55)]');
-          const indicator = c.querySelector('.selection-indicator');
-          if (indicator) {
-            indicator.classList.remove('flex');
-            indicator.classList.add('hidden');
-          }
-          const title = c.querySelector('.plan-title');
-          const price = c.querySelector('.plan-price');
-          const desc = c.querySelector('.plan-description');
-          if (title) {
-            title.classList.remove('text-white');
-            title.classList.add('text-pale-pink');
-          }
-          if (price) {
-            price.classList.remove('text-[#FD0383]');
-            price.classList.add('text-[#FE8BC6]');
-          }
-          if (desc) {
-            desc.classList.remove('text-[#FEB1D9]');
-            desc.classList.add('text-pale-pink');
-          }
-        });
+  const API_BASE_URL = import.meta.env.PUBLIC_API_URL || "/api";
+  const CULQI_PUBLIC_KEY = import.meta.env.PUBLIC_CULQI_PUBLIC_KEY || "pk_test_xxx";
+  const CULQI_SCRIPT_URL = "https://checkout.culqi.com/js/v4";
 
-        card.classList.add('selected', 'shadow-[0_0_20px_rgba(253,3,131,0.55)]');
-        const indicator = card.querySelector('.selection-indicator');
-        if (indicator) {
-          indicator.classList.remove('hidden');
-          indicator.classList.add('flex');
-        }
-        const title = card.querySelector('.plan-title');
-        const price = card.querySelector('.plan-price');
-        const desc = card.querySelector('.plan-description');
-        if (title) {
-          title.classList.remove('text-pale-pink');
-          title.classList.add('text-white');
-        }
-        if (price) {
-          price.classList.remove('text-[#FE8BC6]');
-          price.classList.add('text-[#FD0383]');
-        }
-        if (desc) {
-          desc.classList.remove('text-pale-pink');
-          desc.classList.add('text-[#FEB1D9]');
-        }
+  const PLAN_TYPE_MAP: Record<string, string> = {
+    mensual: "MONTHLY",
+    "3meses": "QUARTERLY",
+  };
 
-        selectedPlan = card.dataset.plan || '';
-      });
-    });
+  const PLAN_PRICE_MAP: Record<string, number> = {
+    mensual: 6,
+    "3meses": 16,
+  };
 
-    const form = document.getElementById('plan-form') as HTMLFormElement;
-    form?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      localStorage.setItem('selectedPlan', selectedPlan);
-      window.location.href = '/registro/metodo-pago';
+  function loadCulqiScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if ((window as any).Culqi) {
+        resolve();
+        return;
+      }
+
+      const existing = document.querySelector(
+        `script[src="${CULQI_SCRIPT_URL}"]`,
+      );
+      if (existing) {
+        const check = setInterval(() => {
+          if ((window as any).Culqi) {
+            clearInterval(check);
+            resolve();
+          }
+        }, 200);
+        setTimeout(() => {
+          clearInterval(check);
+          reject(new Error("Timeout loading Culqi"));
+        }, 10000);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = CULQI_SCRIPT_URL;
+      script.async = true;
+      script.onload = () => {
+        const check = setInterval(() => {
+          if ((window as any).Culqi) {
+            clearInterval(check);
+            resolve();
+          }
+        }, 200);
+        setTimeout(() => {
+          clearInterval(check);
+          reject(new Error("Timeout loading Culqi"));
+        }, 10000);
+      };
+      script.onerror = () =>
+        reject(new Error("Failed to load Culqi script"));
+      document.head.appendChild(script);
     });
   }
 
+  function getAuthHeaders() {
+    const token = localStorage.getItem("accessToken");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  function initPlanForm() {
+    const planCards = document.querySelectorAll<HTMLElement>(".plan-card");
+    let selectedPlan = "3meses";
+
+    planCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        planCards.forEach((c) => {
+          c.classList.remove(
+            "selected",
+            "shadow-[0_0_20px_rgba(253,3,131,0.55)]",
+          );
+          const indicator = c.querySelector(".selection-indicator");
+          if (indicator) {
+            indicator.classList.remove("flex");
+            indicator.classList.add("hidden");
+          }
+          const title = c.querySelector(".plan-title");
+          const price = c.querySelector(".plan-price");
+          const desc = c.querySelector(".plan-description");
+          if (title) {
+            title.classList.remove("text-white");
+            title.classList.add("text-pale-pink");
+          }
+          if (price) {
+            price.classList.remove("text-[#FD0383]");
+            price.classList.add("text-[#FE8BC6]");
+          }
+          if (desc) {
+            desc.classList.remove("text-[#FEB1D9]");
+            desc.classList.add("text-pale-pink");
+          }
+        });
+
+        card.classList.add(
+          "selected",
+          "shadow-[0_0_20px_rgba(253,3,131,0.55)]",
+        );
+        const indicator = card.querySelector(".selection-indicator");
+        if (indicator) {
+          indicator.classList.remove("hidden");
+          indicator.classList.add("flex");
+        }
+        const title = card.querySelector(".plan-title");
+        const price = card.querySelector(".plan-price");
+        const desc = card.querySelector(".plan-description");
+        if (title) {
+          title.classList.remove("text-pale-pink");
+          title.classList.add("text-white");
+        }
+        if (price) {
+          price.classList.remove("text-[#FE8BC6]");
+          price.classList.add("text-[#FD0383]");
+        }
+        if (desc) {
+          desc.classList.remove("text-pale-pink");
+          desc.classList.add("text-[#FEB1D9]");
+        }
+
+        selectedPlan = card.dataset.plan || "";
+      });
+    });
+
+    const form = document.getElementById("plan-form") as HTMLFormElement;
+    const errorDiv = document.getElementById("payment-error");
+
+    function showError(msg: string) {
+      if (errorDiv) {
+        errorDiv.textContent = msg;
+        errorDiv.classList.remove("hidden");
+      }
+    }
+
+    function hideError() {
+      if (errorDiv) {
+        errorDiv.textContent = "";
+        errorDiv.classList.add("hidden");
+      }
+    }
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const formData = new FormData(form);
+      const metodoPago = formData.get("metodo-pago") as string;
+      const planType = PLAN_TYPE_MAP[selectedPlan];
+
+      if (!planType) {
+        showError("Selecciona un plan válido");
+        return;
+      }
+
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        showError("Debes iniciar sesión para continuar");
+        return;
+      }
+
+      const submitBtn = form.querySelector(
+        'button[type="submit"]',
+      ) as HTMLButtonElement;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "PROCESANDO...";
+      }
+
+      try {
+        // Create subscription order
+        const response = await axios.post(
+          `${API_BASE_URL}/subscriptions`,
+          { type: planType },
+          { headers: getAuthHeaders() },
+        );
+        const order = response.data;
+
+        localStorage.setItem("selectedPlan", selectedPlan);
+
+        if (metodoPago === "recurrente") {
+          await openCulqi(order);
+        } else if (metodoPago === "yape") {
+          // Store order info for Yape modal
+          (window as any).__pendingOrder = order;
+          const precioSpan = document.getElementById("yape-precio");
+          if (precioSpan) {
+            precioSpan.textContent = `${order.totalAmount || PLAN_PRICE_MAP[selectedPlan]}.00`;
+          }
+          (window as any).openYapeModal?.();
+          // Re-enable button since modal is open
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "REALIZAR COMPRA";
+          }
+        }
+      } catch (err: any) {
+        const message =
+          err.response?.data?.message || "Error al crear la orden";
+        showError(message);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "REALIZAR COMPRA";
+        }
+      }
+    });
+
+    async function openCulqi(order: any) {
+      const submitBtn = form?.querySelector(
+        'button[type="submit"]',
+      ) as HTMLButtonElement;
+
+      try {
+        await loadCulqiScript();
+      } catch {
+        showError(
+          "No se pudo cargar el procesador de pagos. Recarga la página e intenta de nuevo.",
+        );
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "REALIZAR COMPRA";
+        }
+        return;
+      }
+
+      const Culqi = (window as any).Culqi;
+      const amountInCents = Math.round(
+        (order.totalAmount || PLAN_PRICE_MAP[selectedPlan]) * 100,
+      );
+
+      Culqi.publicKey = CULQI_PUBLIC_KEY;
+      Culqi.settings({
+        title: "Juega Demonio",
+        currency: order.currency || "PEN",
+        amount: amountInCents,
+      });
+      Culqi.options({
+        lang: "es",
+        style: {
+          bannerColor: "#FD0383",
+          buttonBackground: "#FD0383",
+          menuColor: "#FD0383",
+          linksColor: "#FD0383",
+          buttonText: "Pagar",
+          buttonTextColor: "#FFFFFF",
+          priceColor: "#FD0383",
+        },
+      });
+
+      // Set global Culqi callback
+      (window as any).culqi = async () => {
+        if (Culqi.token) {
+          const culqiToken = Culqi.token.id;
+          Culqi.close();
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "PROCESANDO PAGO...";
+          }
+
+          try {
+            await axios.post(
+              `${API_BASE_URL}/payments/charge`,
+              { orderId: order.id, token: culqiToken },
+              { headers: getAuthHeaders() },
+            );
+            // Payment successful — redirect to dashboard
+            window.location.href = "/app/dashboard";
+          } catch (err: any) {
+            showError(
+              err.response?.data?.message || "Error al procesar el pago",
+            );
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = "REALIZAR COMPRA";
+            }
+          }
+        } else if (Culqi.error) {
+          Culqi.close();
+          showError(
+            Culqi.error.user_message || "Error al procesar la tarjeta",
+          );
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "REALIZAR COMPRA";
+          }
+        }
+      };
+
+      Culqi.open();
+
+      // Re-enable button after Culqi modal opens (user can close it)
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "REALIZAR COMPRA";
+      }
+    }
+  }
+
   initPlanForm();
-  document.addEventListener('astro:after-swap', initPlanForm);
+  document.addEventListener("astro:after-swap", initPlanForm);
 </script>

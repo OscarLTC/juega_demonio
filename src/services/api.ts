@@ -80,6 +80,7 @@ export const raffleApi = {
   activate: (id: string) => api.post(`/admin/raffles/${id}/activate`),
   startClosing: (id: string) => api.post(`/admin/raffles/${id}/close`),
   finalize: (id: string, participantCode: string) => api.post(`/admin/raffles/${id}/finalize`, { participantCode }),
+  cancel: (id: string) => api.post(`/admin/raffles/${id}/cancel`),
   delete: (id: string) => api.delete(`/admin/raffles/${id}`),
 }
 

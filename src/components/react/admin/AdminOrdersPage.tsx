@@ -5,6 +5,10 @@ import ShoppingBag from 'lucide-react/dist/esm/icons/shopping-bag'
 import CreditCard from 'lucide-react/dist/esm/icons/credit-card'
 import Sparkles from 'lucide-react/dist/esm/icons/sparkles'
 import Filter from 'lucide-react/dist/esm/icons/filter'
+import Package from 'lucide-react/dist/esm/icons/package'
+import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
+import Clock from 'lucide-react/dist/esm/icons/clock'
+import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign'
 import LoadingSpinner from '../shared/LoadingSpinner'
 
 const ORDER_STATUSES = ['ALL', 'PENDING', 'PAID', 'EXPIRED', 'CANCELLED']
@@ -74,28 +78,45 @@ export default function AdminOrdersContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-light-gray">Ordenes</h1>
-        <p className="text-dark-gray">Administra todas las ordenes del sistema</p>
+        <h1 className="app-heading">Ordenes</h1>
+        <p className="app-heading-sub">Administra todas las ordenes del sistema</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="app-card">
-          <p className="text-sm text-dark-gray">Total Ordenes</p>
-          <p className="text-2xl font-bold text-light-gray">{stats?.total || 0}</p>
+        <div className="app-card py-5 text-center relative overflow-hidden">
+          <div className="app-icon-box app-icon-box-sm bg-blue-500/10 mx-auto mb-3">
+            <Package className="w-4 h-4 text-blue-400" />
+          </div>
+          <p className="text-3xl font-bold text-light-gray tabular-nums" style={{ fontFamily: 'var(--font-family-display)' }}>{stats?.total || 0}</p>
+          <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium">Total Ordenes</p>
         </div>
-        <div className="app-card">
-          <p className="text-sm text-dark-gray">Pagadas</p>
-          <p className="text-2xl font-bold text-green-400">{stats?.paid || 0}</p>
+        <div className="app-card py-5 text-center relative overflow-hidden">
+          <div className="app-icon-box app-icon-box-sm bg-green-500/10 mx-auto mb-3">
+            <CheckCircle className="w-4 h-4 text-green-400" />
+          </div>
+          <p className="text-3xl font-bold text-green-400 tabular-nums" style={{ fontFamily: 'var(--font-family-display)' }}>{stats?.paid || 0}</p>
+          <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium">Pagadas</p>
         </div>
-        <div className="app-card">
-          <p className="text-sm text-dark-gray">Pendientes</p>
-          <p className="text-2xl font-bold text-yellow-400">{stats?.pending || 0}</p>
+        <div className="app-card py-5 text-center relative overflow-hidden">
+          <div className="app-icon-box app-icon-box-sm bg-yellow-500/10 mx-auto mb-3">
+            <Clock className="w-4 h-4 text-yellow-400" />
+          </div>
+          <p className="text-3xl font-bold text-yellow-400 tabular-nums" style={{ fontFamily: 'var(--font-family-display)' }}>{stats?.pending || 0}</p>
+          <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium">Pendientes</p>
         </div>
-        <div className="app-card">
-          <p className="text-sm text-dark-gray">Ingresos</p>
-          <p className="text-2xl font-bold text-intense-pink">
+        <div className="app-card-glow py-5 text-center relative overflow-hidden">
+          <div className="app-accent-line" />
+          <div
+            className="absolute -top-12 -right-12 w-24 h-24 rounded-full blur-3xl pointer-events-none"
+            style={{ background: 'oklch(0.6432 0.2593 1.25 / 0.06)' }}
+          />
+          <div className="app-icon-box app-icon-box-sm bg-intense-pink/10 mx-auto mb-3 relative">
+            <DollarSign className="w-4 h-4 text-intense-pink" />
+          </div>
+          <p className="text-2xl font-bold text-intense-pink tabular-nums relative" style={{ fontFamily: 'var(--font-family-display)' }}>
             S/ {stats?.paidAmount?.toFixed(2) || '0.00'}
           </p>
+          <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium relative">Ingresos</p>
         </div>
       </div>
 
@@ -118,7 +139,8 @@ export default function AdminOrdersContent() {
         </div>
       </div>
 
-      <div className="app-card overflow-hidden p-0">
+      <div className="app-card-glow overflow-hidden p-0 relative">
+        <div className="app-accent-line" />
         <div className="overflow-x-auto">
           <table className="app-table">
             <thead>

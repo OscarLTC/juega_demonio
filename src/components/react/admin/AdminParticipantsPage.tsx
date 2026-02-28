@@ -14,6 +14,7 @@ const RAFFLE_STATUS_BADGES: Record<string, { cls: string; label: string }> = {
   ACTIVE: { cls: 'app-badge-success', label: 'Activo' },
   CLOSING: { cls: 'app-badge-warning', label: 'Cerrando' },
   CLOSED: { cls: 'app-badge-danger', label: 'Cerrado' },
+  CANCELLED: { cls: 'app-badge-danger', label: 'Cancelado' },
 }
 
 export default function AdminParticipantsContent() {
@@ -110,11 +111,12 @@ export default function AdminParticipantsContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-light-gray">Participantes</h1>
-        <p className="text-dark-gray">Visualiza los participantes de cada sorteo</p>
+        <h1 className="app-heading">Participantes</h1>
+        <p className="app-heading-sub">Visualiza los participantes de cada sorteo</p>
       </div>
 
-      <div className="app-card">
+      <div className={`relative overflow-hidden ${selectedRaffle ? 'app-card-glow' : 'app-card'}`}>
+        {selectedRaffle && <div className="app-accent-line" />}
         <label className="app-label">Seleccionar Sorteo</label>
         <select
           value={selectedRaffle}
@@ -145,37 +147,46 @@ export default function AdminParticipantsContent() {
       {selectedRaffle && (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="app-card flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-400" />
+            <div className="app-card-glow py-5 text-center relative overflow-hidden">
+              <div className="app-accent-line" />
+              <div
+                className="absolute -top-12 -right-12 w-24 h-24 rounded-full blur-3xl pointer-events-none"
+                style={{ background: 'oklch(0.55 0.2 250 / 0.06)' }}
+              />
+              <div className="app-icon-box app-icon-box-sm bg-blue-500/10 mx-auto mb-3 relative">
+                <Users className="w-4 h-4 text-blue-400" />
               </div>
-              <div>
-                <p className="text-sm text-dark-gray">Total Participantes</p>
-                <p className="text-2xl font-bold text-light-gray">{stats?.count || 0}</p>
-              </div>
+              <p className="text-3xl font-bold text-light-gray tabular-nums relative" style={{ fontFamily: 'var(--font-family-display)' }}>{stats?.count || 0}</p>
+              <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium relative">Total Participantes</p>
             </div>
-            <div className="app-card flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                <Ticket className="w-6 h-6 text-green-400" />
+            <div className="app-card-glow py-5 text-center relative overflow-hidden">
+              <div className="app-accent-line" style={{ background: 'linear-gradient(90deg, transparent, oklch(0.55 0.2 145 / 0.4), transparent)' }} />
+              <div
+                className="absolute -top-12 -right-12 w-24 h-24 rounded-full blur-3xl pointer-events-none"
+                style={{ background: 'oklch(0.55 0.2 145 / 0.06)' }}
+              />
+              <div className="app-icon-box app-icon-box-sm bg-green-500/10 mx-auto mb-3 relative">
+                <Ticket className="w-4 h-4 text-green-400" />
               </div>
-              <div>
-                <p className="text-sm text-dark-gray">Total Tickets</p>
-                <p className="text-2xl font-bold text-light-gray">{stats?.totalTickets || 0}</p>
-              </div>
+              <p className="text-3xl font-bold text-light-gray tabular-nums relative" style={{ fontFamily: 'var(--font-family-display)' }}>{stats?.totalTickets || 0}</p>
+              <p className="text-[11px] text-dark-gray mt-2 uppercase tracking-wider font-medium relative">Total Tickets</p>
             </div>
-            <div className="app-card">
+            <div className={`relative overflow-hidden ${canExport ? 'app-card-glow' : 'app-card'}`}>
+              {canExport && (
+                <div className="app-accent-line" style={{ background: 'linear-gradient(90deg, transparent, oklch(0.6 0.18 160 / 0.4), transparent)' }} />
+              )}
               {canExport ? (
                 <button
                   onClick={handleExportExcel}
                   disabled={exporting || !participants?.length}
-                  className="w-full h-full flex items-center gap-4 hover:bg-white/5 transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-full flex items-center gap-4 hover:bg-white/5 transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed relative"
                 >
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <div className="app-icon-box w-12 h-12 rounded-xl bg-emerald-500/15">
                     <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
                   </div>
                   <div className="text-left">
                     <p className="text-sm text-dark-gray">Exportar</p>
-                    <p className="text-lg font-bold text-emerald-400 flex items-center gap-1">
+                    <p className="text-lg font-bold text-emerald-400 flex items-center gap-1" style={{ fontFamily: 'var(--font-family-display)' }}>
                       <Download className="w-4 h-4" />
                       {exporting ? 'Descargando...' : 'Excel'}
                     </p>
@@ -183,7 +194,7 @@ export default function AdminParticipantsContent() {
                 </button>
               ) : (
                 <div className="flex items-center gap-4 opacity-60">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="app-icon-box w-12 h-12 rounded-xl bg-white/5">
                     <FileSpreadsheet className="w-6 h-6 text-dark-gray" />
                   </div>
                   <div className="text-left">
@@ -207,11 +218,23 @@ export default function AdminParticipantsContent() {
           {participantsLoading ? (
             <LoadingSpinner />
           ) : participants?.length === 0 ? (
-            <Alert variant="info">
-              No hay participantes registrados en este sorteo.
-            </Alert>
+            <div className="app-card flex flex-col items-center text-center py-12">
+              <div className="app-icon-box app-icon-box-lg bg-intense-pink/8 mb-5">
+                <Users className="w-7 h-7 text-intense-pink/40" />
+              </div>
+              <p
+                className="text-light-gray font-bold mb-1"
+                style={{ fontFamily: 'var(--font-family-display)' }}
+              >
+                SIN PARTICIPANTES AUN
+              </p>
+              <p className="text-sm text-dark-gray max-w-xs">
+                No hay participantes registrados en este sorteo.
+              </p>
+            </div>
           ) : (
-            <div className="app-card overflow-hidden p-0">
+            <div className="app-card-glow overflow-hidden p-0 relative">
+              <div className="app-accent-line" />
               <div className="overflow-x-auto">
                 <table className="app-table">
                   <thead>
@@ -228,7 +251,10 @@ export default function AdminParticipantsContent() {
                       <tr key={participant.id}>
                         <td>
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-intense-pink/20 flex items-center justify-center">
+                            <div
+                              className="w-8 h-8 rounded-full flex items-center justify-center"
+                              style={{ background: 'oklch(0.6432 0.2593 1.25 / 0.15)' }}
+                            >
                               <span className="text-intense-pink font-medium text-sm">
                                 {participant.displayName?.charAt(0)?.toUpperCase()}
                               </span>

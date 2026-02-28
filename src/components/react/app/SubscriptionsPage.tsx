@@ -143,29 +143,28 @@ export default function SubscriptionsContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-light-gray">Suscripciones</h1>
-        <p className="text-dark-gray">Elige un plan para participar en los sorteos</p>
+        <h1 className="app-heading">Suscripciones</h1>
+        <p className="app-heading-sub">Elige un plan para participar en los sorteos</p>
       </div>
 
       {/* Active subscription — prominent card */}
       {activeSub && (
-        <div className={`app-card overflow-hidden ${
+        <div className={`app-card-glow overflow-hidden ${
           activeSub.remainingRaffles === 0
-            ? 'border-red-500/30'
-            : 'border-green-500/30'
+            ? '!border-red-500/25 !shadow-none'
+            : ''
         }`}>
-          {/* Top accent line */}
-          <div className={`absolute top-0 left-0 right-0 h-px ${
-            activeSub.remainingRaffles === 0 ? 'bg-red-500/50' : 'bg-green-500/50'
-          }`} />
+          <div className="app-accent-line" style={
+            activeSub.remainingRaffles === 0
+              ? { background: 'linear-gradient(90deg, transparent, oklch(0.6 0.25 25 / 0.4), transparent)' }
+              : undefined
+          } />
 
           <div className="flex items-start gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-              activeSub.remainingRaffles === 0
-                ? 'bg-red-500/15'
-                : 'bg-green-500/15'
+            <div className={`app-icon-box w-12 h-12 rounded-xl shrink-0 ${
+              activeSub.remainingRaffles === 0 ? 'bg-red-500/15' : 'bg-green-500/15'
             }`}>
               {activeSub.remainingRaffles === 0 ? (
                 <AlertTriangle className="w-6 h-6 text-red-400" />
@@ -188,7 +187,10 @@ export default function SubscriptionsContent() {
                 )}
               </div>
 
-              <p className="text-lg font-bold text-light-gray mt-1">
+              <p
+                className="text-lg font-bold text-light-gray mt-1 tracking-wide"
+                style={{ fontFamily: 'var(--font-family-display)' }}
+              >
                 {activeSub.typeName}
               </p>
 
@@ -221,17 +223,22 @@ export default function SubscriptionsContent() {
 
       {/* Payment Mode Selector */}
       <div className="app-card">
-        <h3 className="text-sm font-semibold text-light-gray mb-3">Metodo de pago</h3>
+        <h3
+          className="text-sm font-bold text-light-gray tracking-wide uppercase mb-3"
+          style={{ fontFamily: 'var(--font-family-display)' }}
+        >
+          Metodo de pago
+        </h3>
         <div className="flex gap-3">
           <button
             onClick={() => setPaymentMode('one-time')}
-            className={`flex-1 p-3 rounded-lg border transition-all text-sm ${
+            className={`flex-1 p-3.5 rounded-lg border transition-all text-sm text-center ${
               paymentMode === 'one-time'
-                ? 'border-intense-pink bg-intense-pink/10 text-intense-pink'
-                : 'border-charcoal/30 text-gray hover:border-charcoal/50'
+                ? 'border-intense-pink/40 bg-intense-pink/8 text-intense-pink'
+                : 'border-charcoal/20 text-gray hover:border-charcoal/40'
             }`}
           >
-            <CreditCard className="w-5 h-5 mx-auto mb-1" />
+            <CreditCard className="w-5 h-5 mx-auto mb-1.5" />
             Pago unico
           </button>
           <button
@@ -242,15 +249,15 @@ export default function SubscriptionsContent() {
               }
             }}
             disabled={!hasCards}
-            className={`flex-1 p-3 rounded-lg border transition-all text-sm ${
+            className={`flex-1 p-3.5 rounded-lg border transition-all text-sm text-center ${
               paymentMode === 'recurring'
-                ? 'border-intense-pink bg-intense-pink/10 text-intense-pink'
+                ? 'border-intense-pink/40 bg-intense-pink/8 text-intense-pink'
                 : hasCards
-                  ? 'border-charcoal/30 text-gray hover:border-charcoal/50'
-                  : 'border-charcoal/20 text-dark-gray cursor-not-allowed'
+                  ? 'border-charcoal/20 text-gray hover:border-charcoal/40'
+                  : 'border-charcoal/10 text-dark-gray/60 cursor-not-allowed'
             }`}
           >
-            <RefreshCw className="w-5 h-5 mx-auto mb-1" />
+            <RefreshCw className="w-5 h-5 mx-auto mb-1.5" />
             Pago recurrente
           </button>
         </div>
@@ -273,8 +280,8 @@ export default function SubscriptionsContent() {
         )}
 
         {!hasCards && paymentMode === 'one-time' && (
-          <p className="text-xs text-dark-gray mt-2">
-            ¿Quieres pago recurrente?{' '}
+          <p className="text-xs text-dark-gray mt-2.5">
+            Quieres pago recurrente?{' '}
             <Link to="/perfil" className="text-intense-pink hover:underline">
               Guarda una tarjeta primero
             </Link>
@@ -282,68 +289,100 @@ export default function SubscriptionsContent() {
         )}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {plans?.map((plan: any) => (
-          <div
-            key={plan.type}
-            className={`app-card relative overflow-hidden transition-all ${
-              plan.type === 'MONTHLY' ? 'ring-2 ring-intense-pink shadow-lg shadow-intense-pink/10' : ''
-            }`}
-          >
-            {plan.type === 'MONTHLY' && (
-              <div className="absolute top-0 right-0 bg-intense-pink text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                POPULAR
-              </div>
-            )}
+      {/* Plan cards */}
+      <div className="grid md:grid-cols-3 gap-5">
+        {plans?.map((plan: any) => {
+          const isPopular = plan.type === 'MONTHLY'
 
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-light-gray mb-2">{plan.name}</h3>
-              <div className="flex items-baseline justify-center gap-1">
-                <span className="text-4xl font-bold text-intense-pink">
-                  S/ {plan.price}
-                </span>
-              </div>
-              <p className="text-dark-gray mt-2">{plan.description}</p>
-            </div>
-
-            <ul className="space-y-3 mb-6">
-              <li className="flex items-center gap-2 text-gray">
-                <Check className="w-5 h-5 text-green-400" />
-                <span>{plan.rafflesCovered} sorteo(s) cubiertos</span>
-              </li>
-              <li className="flex items-center gap-2 text-gray">
-                <Ticket className="w-5 h-5 text-green-400" />
-                <span>Tickets automaticos por sorteo</span>
-              </li>
-              <li className="flex items-center gap-2 text-gray">
-                <Zap className="w-5 h-5 text-green-400" />
-                <span>Acceso inmediato</span>
-              </li>
-              {paymentMode === 'recurring' && (
-                <li className="flex items-center gap-2 text-intense-pink">
-                  <RefreshCw className="w-5 h-5" />
-                  <span>Renovacion automatica</span>
-                </li>
-              )}
-            </ul>
-
-            <button
-              onClick={() => handleSelectPlan(plan)}
-              disabled={isPending || (paymentMode === 'recurring' && !selectedCardId)}
-              className={`w-full py-3 rounded-lg font-medium transition-colors ${
-                plan.type === 'MONTHLY'
-                  ? 'app-btn-primary'
-                  : 'app-btn-secondary'
+          return (
+            <div
+              key={plan.type}
+              className={`relative overflow-hidden transition-all rounded-xl p-6 ${
+                isPopular
+                  ? 'app-card-glow'
+                  : 'app-card'
               }`}
             >
-              {isPending && selectedPlan?.type === plan.type
-                ? 'Procesando...'
-                : paymentMode === 'recurring'
-                  ? 'Suscribirme'
-                  : 'Seleccionar Plan'}
-            </button>
-          </div>
-        ))}
+              {isPopular && (
+                <>
+                  <div className="app-accent-line" />
+                  {/* Corner glow */}
+                  <div
+                    className="absolute -top-16 -right-16 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+                    style={{ background: 'oklch(0.6432 0.2593 1.25 / 0.06)' }}
+                  />
+                  <div
+                    className="absolute top-0 right-0 text-white text-[11px] font-bold px-3 py-1 rounded-bl-lg tracking-wider"
+                    style={{ fontFamily: 'var(--font-family-display)', background: 'oklch(0.6432 0.2593 1.25)' }}
+                  >
+                    POPULAR
+                  </div>
+                </>
+              )}
+
+              <div className="text-center mb-6 relative">
+                <h3
+                  className="text-xl font-bold text-light-gray mb-2 tracking-wide uppercase"
+                  style={{ fontFamily: 'var(--font-family-display)' }}
+                >
+                  {plan.name}
+                </h3>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span
+                    className="text-4xl font-bold text-intense-pink tabular-nums"
+                    style={{ fontFamily: 'var(--font-family-display)' }}
+                  >
+                    S/ {plan.price}
+                  </span>
+                </div>
+                <p className="text-sm text-dark-gray mt-2">{plan.description}</p>
+              </div>
+
+              <ul className="space-y-3 mb-6 relative">
+                <li className="flex items-center gap-2.5 text-gray text-sm">
+                  <div className="app-icon-box w-6 h-6 rounded-md bg-green-500/10">
+                    <Check className="w-3.5 h-3.5 text-green-400" />
+                  </div>
+                  <span>{plan.rafflesCovered} sorteo(s) cubiertos</span>
+                </li>
+                <li className="flex items-center gap-2.5 text-gray text-sm">
+                  <div className="app-icon-box w-6 h-6 rounded-md bg-green-500/10">
+                    <Ticket className="w-3.5 h-3.5 text-green-400" />
+                  </div>
+                  <span>Tickets automaticos por sorteo</span>
+                </li>
+                <li className="flex items-center gap-2.5 text-gray text-sm">
+                  <div className="app-icon-box w-6 h-6 rounded-md bg-green-500/10">
+                    <Zap className="w-3.5 h-3.5 text-green-400" />
+                  </div>
+                  <span>Acceso inmediato</span>
+                </li>
+                {paymentMode === 'recurring' && (
+                  <li className="flex items-center gap-2.5 text-intense-pink text-sm">
+                    <div className="app-icon-box w-6 h-6 rounded-md bg-intense-pink/10">
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </div>
+                    <span>Renovacion automatica</span>
+                  </li>
+                )}
+              </ul>
+
+              <button
+                onClick={() => handleSelectPlan(plan)}
+                disabled={isPending || (paymentMode === 'recurring' && !selectedCardId)}
+                className={`w-full py-3 rounded-lg font-medium transition-colors relative ${
+                  isPopular ? 'app-btn-primary' : 'app-btn-secondary'
+                }`}
+              >
+                {isPending && selectedPlan?.type === plan.type
+                  ? 'Procesando...'
+                  : paymentMode === 'recurring'
+                    ? 'Suscribirme'
+                    : 'Seleccionar Plan'}
+              </button>
+            </div>
+          )
+        })}
       </div>
 
       {(createMutation.isError || recurringMutation.isError) && (
@@ -362,15 +401,20 @@ export default function SubscriptionsContent() {
 
       {/* Subscription History */}
       <div>
-        <h2 className="text-xl font-bold text-light-gray mb-4">Historial de Suscripciones</h2>
+        <h2 className="app-section-title mb-4">Historial de Suscripciones</h2>
         {subsLoading ? (
           <LoadingSpinner />
         ) : mySubscriptions?.length === 0 ? (
-          <div className="app-card flex flex-col items-center text-center py-10">
-            <div className="w-16 h-16 rounded-2xl bg-intense-pink/10 flex items-center justify-center mb-4">
-              <Ticket className="w-8 h-8 text-intense-pink/60" />
+          <div className="app-card flex flex-col items-center text-center py-12">
+            <div className="app-icon-box app-icon-box-lg bg-intense-pink/8 mb-5">
+              <Ticket className="w-7 h-7 text-intense-pink/40" />
             </div>
-            <p className="text-light-gray font-semibold mb-1">Sin suscripciones aun</p>
+            <p
+              className="text-light-gray font-bold mb-1"
+              style={{ fontFamily: 'var(--font-family-display)' }}
+            >
+              SIN SUSCRIPCIONES AUN
+            </p>
             <p className="text-sm text-dark-gray max-w-xs">
               Selecciona un plan arriba para comenzar a participar en los sorteos.
             </p>
@@ -387,7 +431,7 @@ export default function SubscriptionsContent() {
               return (
                 <div
                   key={sub.id}
-                  className={`app-card transition-colors ${
+                  className={`app-card overflow-hidden transition-colors ${
                     isActive && isZero
                       ? 'border-red-500/20'
                       : isActive
@@ -395,15 +439,21 @@ export default function SubscriptionsContent() {
                         : ''
                   }`}
                 >
+                  {/* Left accent bar */}
+                  {isActive && (
+                    <div className={`absolute left-0 top-0 bottom-0 w-0.5 ${
+                      isZero ? 'bg-red-500/50' : 'bg-green-500/50'
+                    }`} />
+                  )}
+
                   <div className="flex items-center gap-4">
-                    {/* Status icon */}
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                    <div className={`app-icon-box app-icon-box-md shrink-0 ${
                       isActive && !isZero
                         ? 'bg-green-500/15'
                         : isActive && isZero
                           ? 'bg-red-500/15'
                           : isExpired
-                            ? 'bg-charcoal/20'
+                            ? 'bg-charcoal/15'
                             : 'bg-intense-pink/10'
                     }`}>
                       {isActive && !isZero ? (
@@ -417,7 +467,6 @@ export default function SubscriptionsContent() {
                       )}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-light-gray">
@@ -451,7 +500,6 @@ export default function SubscriptionsContent() {
                       )}
                     </div>
 
-                    {/* Right side: badge + action */}
                     <div className="shrink-0 flex items-center gap-3">
                       {isActive && isZero ? (
                         <button
@@ -459,7 +507,7 @@ export default function SubscriptionsContent() {
                             const plansSection = document.querySelector('.grid.md\\:grid-cols-3')
                             plansSection?.scrollIntoView({ behavior: 'smooth' })
                           }}
-                          className="flex items-center gap-1 text-xs text-intense-pink hover:text-pink transition-colors"
+                          className="flex items-center gap-1 text-xs text-intense-pink hover:text-pink transition-colors font-medium"
                         >
                           Renovar
                           <ArrowRight className="w-3 h-3" />
@@ -472,7 +520,6 @@ export default function SubscriptionsContent() {
                     </div>
                   </div>
 
-                  {/* Progress bar for active subscriptions */}
                   {isActive && (
                     <RaffleProgressBar remaining={sub.remainingRaffles} total={total} />
                   )}

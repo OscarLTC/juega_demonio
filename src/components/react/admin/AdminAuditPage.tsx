@@ -68,8 +68,8 @@ export default function AdminAuditContent() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-light-gray">Auditoria</h1>
-          <p className="text-dark-gray">Registro de eventos del sistema</p>
+          <h1 className="app-heading">Auditoria</h1>
+          <p className="app-heading-sub">Registro de eventos del sistema</p>
         </div>
         <button
           onClick={() => refetch()}
